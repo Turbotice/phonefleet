@@ -108,9 +108,9 @@ def get_file(phone,filename):
     #dic = read_data(data,name)
     return a
 
-def load_data(filename):
+def load_data(filename,phone):
     #print(num)
-    phone = int(filename.split('/')[-2])
+    #phone = int(filename.split('/')[-2])
     num = int(filename.split('-')[1])
     data = rw.read_csv(filename,delimiter=',')
     name = os.path.basename(filename)
