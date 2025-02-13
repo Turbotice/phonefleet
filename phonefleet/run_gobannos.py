@@ -38,7 +38,8 @@ port = 8080
 commands = {'start':'/start?name',
             'stop':'/stop',
             'status':'/status',
-            'sync':'/kick-sync?threshold'}
+            'sync':'/kick-sync?threshold',
+            'clean':'/clean-files'}
           
 #import stephane.display.graphes as graphes
 def get_base_url(ip):
@@ -73,11 +74,26 @@ def get_today_file_list(ip):
 def load_data():
     pprint(filelist)
 
+def get_file(filename):
+    pass
+
 def individual_stop(ip):
     a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['stop']).read()
 
 def individual_start(ip):
     a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['start']).read()
+
+def individual_clean(ip):
+    a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['clean']).read()
+
+    phone = get_phone(ip)
+    print(f'Do you want to erase data for phone {phone} ? y/n')
+    x = input()
+    if x=='y':
+        a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['clean']).read()
+        print('files deleted')
+    else:
+        print('Command not recognized, no delete')
 
 def time_sync(phone,n=200,timeout=0.02):
     ip = connect.get_adress(phone)

@@ -35,13 +35,14 @@ def scan():
     phonelist = []
     for i,line in enumerate(lines):
         if 'Host is up' in line:
-            print('Host is up, '+lines[i-1])
+            #print('Host is up, '+lines[i-1])
             num = lines[i-1].split(f'{local}.{network}.')[-1]
-            print(num)
+            #print(num)
             try:
                 phonelist.append(int(num)-100)
             except:
                 print('format does not correspond to a phone')
+
     return phonelist
 
 def connect():
