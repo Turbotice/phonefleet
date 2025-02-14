@@ -137,10 +137,17 @@ def read_data(data,name):
 def read_gps(data):
     var = 'gps'
     dic = {}
-    dic['t'+var] = np.asarray(data)[:,0].astype(float)/10**6
-    dic[var+'lat'] = (np.asarray(data)[:,1]).astype(float)
-    dic[var+'lon'] = (np.asarray(data)[:,2]).astype(float)
-    dic[var+'elev'] = (np.asarray(data)[:,3]).astype(float)
+    try:
+        float(d[0,0])
+        j=0
+    except:
+        print(d[0,0])
+        j=1
+
+    dic['t'+var] = np.asarray(data)[j:,0].astype(float)/10**6
+    dic[var+'lat'] = (np.asarray(data)[j:,1]).astype(float)
+    dic[var+'lon'] = (np.asarray(data)[j:,2]).astype(float)
+    dic[var+'elev'] = (np.asarray(data)[j:,3]).astype(float)
     return dic
 
 def decode(data):
