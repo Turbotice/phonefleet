@@ -108,7 +108,7 @@ def get_file(phone,filename):
     #dic = read_data(data,name)
     return a
 
-def load_data(filename,phone):
+def load_data(filename):
     #print(num)
     #phone = int(filename.split('/')[-2])
     num = int(filename.split('-')[1])
