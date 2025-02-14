@@ -138,10 +138,10 @@ def read_gps(data):
     var = 'gps'
     dic = {}
     try:
-        float(d[0,0])
+        float(data[0,0])
         j=0
     except:
-        print(d[0,0])
+        print(data[0,0])
         j=1
 
     dic['t'+var] = np.asarray(data)[j:,0].astype(float)/10**6
