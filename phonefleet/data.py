@@ -141,7 +141,7 @@ def read_gps(data):
         float(data[0,0])
         j=0
     except:
-        print(data[0,0])
+        print(data[0])
         j=1
 
     dic['t'+var] = np.asarray(data)[j:,0].astype(float)/10**6
