@@ -156,7 +156,11 @@ def decode(data):
     return d
 
 def read_raw(d,var):
-    d = np.asarray(d)
+    try:
+        d = np.asarray(d)
+    except:
+        print('dimension does not match ! Skipping')
+        return {}
     dic = {}
     try:
         float(d[0,0])
