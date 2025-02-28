@@ -1,14 +1,16 @@
 
 
-import phonefleet.run_gobannos as gob
-import phonefleet.connect as connect
+import run_gobannos as gob
+import connect as connect
 
 import socket, time,  urllib.request
 import matplotlib.pyplot as plt
 import numpy as np
 
-import icewave.tools.rw_data as rw
-
+try:
+    import icewave.tools.rw_data as rw
+except:
+    print('cannot import rw_data, use other file formats')
 
 import time
 
@@ -52,8 +54,7 @@ def run(phonelist,n=10000,iter=10):
     #print(results)
     return results
 
-def time_sync(phone,n=1000,timeout=0.1):
-    ip = connect.get_adress(phone)
+def time_sync_ip(ip,n=1000,timeout=0.1):
     port = 8080
     
     do_nothing = 0
@@ -106,7 +107,6 @@ def time_sync(phone,n=1000,timeout=0.1):
         Dt[1].append((t1-t_phone)*10**(-9))
         Dt[2].append((t2-t_phone)*10**(-9))
         Dt[3].append((t3-t_phone)*10**(-9))
-        
 		# stop sync
     sock_send.sendto(stop_command, (ip, 5000))
     tend = time.time()
@@ -118,10 +118,11 @@ def time_sync(phone,n=1000,timeout=0.1):
     for key in Dt.keys():
         Dt[key] = np.asarray(Dt[key])
     Dt['duration']=duration
-
-    if len(Dt[1])==0:
-        return None
     return Dt
+
+def time_sync(phone,n=1000,timeout=0.1):
+    ip = connect.get_adress(phone)
+    time_sync_ip(ip,n=1000,timeout=0.1)
 
 def get_lag(Dt):
     duration = Dt['duration']
@@ -154,8 +155,7 @@ def get_lag(Dt):
     results['tstd'] = np.std(tlag)
     results['n'] = len(duration)
     results['t0'] = t0
-#    results['t1'] = t1
-#    results['t3'] = t3
+
     return results
 
 
@@ -168,29 +168,19 @@ def save_table(Dts):
 
 def main():
 #    phonelist = connect.scan()
-#    phonelist = list(range(1,21))+list(range(44,55))#[0,1,3,4,5]
-    #phonelist = [0]+list(range(20,44))+list(range(47,66))
-    #phonelist = list(range(1,20))+[44,45,46]+[59,60,61,62,63,64]
-    #phonelist = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64]
-#    phonelist = list(range(1,))#+[21,22,23,24,25,26,27,28,31,32,35,36,37]
-    phonelist = [4, 6, 7, 8, 10, 11, 13, 14, 15, 16, 17, 27, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 46, 47, 49, 51, 52, 53, 54, 55, 58, 59, 63]#range(21,28)#[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 58, 59, 63, 64]
-
-#    phonelist.remove(4)
+    phonelist = [0,1,3,4,5]
     print(phonelist)
-#    phonelist = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
-        #phonelist = [0,1,5,58,59,60,61,62]
 
-    for i in range(5):
+    for i in range(50):
         t1 = time.time()
-        results = run(phonelist,n=50,iter=3)
+        results = run(phonelist,n=50,iter=100)
         #function to write the Dts in a file, with following lines:
         t2 = time.time()
         print(f'elapsed time :{np.round(t2-t1,decimals=2)} s')
         print(results)
 
-        savefolder = '/home/turbots/Documents/Shack25_local/Tsync_Gobannos/'
-#        savefolder = '/home/turbots/Documents/Bicwin2024/git/phonefleet/phonefleet
-        filename = savefolder+'tsync_'+str(int(np.round(time.time())))+'.txt'
+        savefolder = '/home/turbots/Documents/Bicwin2024/git/phonefleet/phonefleet/Bic25/Tsync/' 
+        filename = savefolder+'tsync_'+str(int(np.round(time.time())))
         rw.writedict_csv(filename,results)
 
 if __name__=='__main__':    

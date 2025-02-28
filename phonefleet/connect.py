@@ -12,19 +12,19 @@ network = 0
 global port
 port = 8080
 
-def ipbase():
+def ipbase(network=network):
     return f'{local}.{network}.'
 
 def basefolder():
     return 'Bic25/'
 
-def get_adress(phone):
-    return ipbase()+str(100+phone)
+def get_adress(phone,network=network):
+    return ipbase(network=network)+str(100+phone)
 
-def get_adresslist(phonelist):
+def get_adresslist(phonelist,network=network):
     adresslist = []
     for phone in phonelist:
-        adresslist.append(get_adress(phone))
+        adresslist.append(get_adress(phone,network=network))
     return adresslist
     
 def scan():

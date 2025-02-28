@@ -14,15 +14,12 @@
 # http://10.10.10.21:8080/get?illum=57.182803|illum_time&illum_time=57.182803
 import requests
 import time
-import zipfile
 import numpy as np
 import glob
 import os
 
+import connect as connect
 
-import phonefleet.connect as connect
-
-import aiohttp
 import asyncio
 import re
 
@@ -343,6 +340,8 @@ def get_buffer():
     pass
     
 def load(folder):
+    import zipfile
+
     filelist = glob.glob(folder+'*.zip')
     print(filelist)
 
