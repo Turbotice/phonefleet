@@ -2,20 +2,25 @@
 
 
 import tsync
-global network
-
-folder = '/storage/emulated/0/Documents/Gobannos/'
+import os
+import time
+import numpy as np
 
 import run_gobannos as gob
 import connect
 
+import csv
+
+def get_folder():
+    folder = '/storage/emulated/0/Documents/'
+    return folder
 
 def set_network():
     s = input('Type sub network number')
     network = int(s)
     return network
 
-def get_phonelist():
+def set_phonelist():
     s = input('Type phonelist to adress :')
     lis = s.split(':')
     phonelist = []
@@ -48,18 +53,52 @@ def start_phonelist(network,phonelist):
         print(status)
         gob.individual_start(ip)
 
-def time_sync():
-    for phone in phonelist:
-        ip = connect.get_adress(phone,network=network)
-        status = gob.get_status(ip)
-        print(status)
-        Dt = tsync.time_sync_ip(ip,n=100,timeout=0.1)
-        print(Dt)
+def time_sync(network,phonelist,iter=5):
+    savefolder = get_folder()+'Gobannos_Tsync/'
+    if not os.path.exists(savefolder):
+        os.makedirs(savefolder)
 
-        with open(filename,'w') as f:
-            for key in Dt.keys():
-                f.write(Dt[key])
-        
+    for i in range(iter):
+        results={}
+        for phone in phonelist:
+            ip = connect.get_adress(phone,network=network)
+            status = gob.get_status(ip)
+            print(status)
+            Dt = tsync.time_sync_ip(ip,n=100,timeout=0.1)
+            print(Dt)
+            if Dt is not None:
+                result = get_lag(Dt)
+                results[phone]=result
+        filename = savefolder+f'tsync_'+str(int(np.round(time.time())))+'.txt'
+        print(filename)
+        tsync.writedict_csv(filename,results)
+
+def get_lag(Dt):
+    duration = Dt['duration']
+    t0 = Dt['time']
+    tmedian = np.median(duration)
+
+    tmax = tmedian*1
+    print(f'Median duration of UDP request : {np.round(tmedian*1000,decimals=3)} ms')
+
+    indices = np.where(duration<tmax)[0]
+    tlag1 = np.asarray(Dt[1])[indices]
+    tlag2 = np.asarray(Dt[2])[indices]
+    tlag3 = np.asarray(Dt[3])[indices]
+    tlag = (tlag1+tlag3)/2
+    Dt = np.median(tlag)
+
+    results={}
+    results['tlag'] = Dt
+    results['dtmedian'] = tmedian
+    results['tmin'] = np.min(tlag)
+    results['tmax'] = np.max(tlag)
+    results['tstd'] = np.std(tlag)
+    results['n'] = len(duration)
+    results['t0'] = t0
+
+    return results
+                
 def choose(network,phonelist):
     print('chose action among : ')
     actions = ['network','phones','status','time','start','stop','exit']
@@ -68,12 +107,11 @@ def choose(network,phonelist):
         print(action,description)
     s = input('')
 
-
     if s=='network':
         network = set_network()
         return s,network
     if s=='phones':
-        phonelist = get_phonelist()
+        phonelist = set_phonelist()
         return s,phonelist
     elif s=='status':
         print(f'Available phonelist : {phonelist}')
@@ -91,8 +129,8 @@ def choose(network,phonelist):
     return s,None
 
 def main():
-    phonelist = []
-    network = 0
+    phonelist = [1,2,3,4,5]
+    network = 47
     s=''
     while not s=='exit':
         s,output = choose(network,phonelist)
