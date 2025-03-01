@@ -20,6 +20,10 @@ def get_folder():
         folder = '/storage/emulated/0/Documents/'
     elif ostype=='macOS':
         folder = 'Phonefleet/'
+    elif ostype=='linux':
+        folder= 'Phonefleet/'
+    else:
+        folder= 'Phonefleet/'
     return folder
 
 def set_network():
@@ -193,6 +197,9 @@ def defaults():
         phonelist = [1,2,3,4,5]
         network = 47
     elif ostype=='macOS':
+        phonelist = [8]
+        network = 1
+    else:
         phonelist = [8]
         network = 1
     return phonelist,network
