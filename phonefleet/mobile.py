@@ -29,6 +29,33 @@ def set_phonelist():
     phonelist = list(set(phonelist))
     return phonelist
 
+def get_filelist(network,phonelist,s,display=True):
+    phone = int(s.split(' ')[1])
+    if phone in phonelist:
+        ip = connect.get_adress(phone,network=network)
+        filelist = gob.get_file_list(ip)
+
+        if display:
+            for i,filename in enumerate(filelist):
+                print(i,filelist)
+        return filelist
+    else:
+        print(f'Phone {phone} not found !')
+        return []
+
+def get_file(network,phonelist,s):
+    try:
+        phone = int(s.split(' ')[1])
+        num = int(s.split(' ')[2])
+    except:
+        print('argument not valid, specify phone and file number,')
+        print('exemple : pull 5 16')
+    s = f'ls {phone}'
+    filelist = get_filelist(network,phonelist,s)
+    filename = filelist[num]
+    data = gob.get_file(ip,filename)
+    return data
+    
 def check_status(network,phonelist):
     for phone in phonelist:
         get_status(phone,network=network)
@@ -122,6 +149,10 @@ def choose(network,phonelist):
         start_phonelist(network,phonelist)
     elif s=='stop':
         stop_phonelist(network,phonelist)
+    elif s[:2]=='ls':
+        get_filelist(network,phonelist,s)
+    elif s[:4]=='pull':
+        get_file(network,phonelist,s)
     elif s=='exit':
         print("exit")
     else:
