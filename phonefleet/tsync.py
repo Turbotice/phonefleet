@@ -7,7 +7,9 @@ import socket, time,  urllib.request
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+import csv
 
+import rw_data
 
 global results
 results = {}
@@ -113,17 +115,6 @@ def time_sync_ip(ip,n=1000,timeout=0.1):
     return Dt
 
 
-def writedict_csv(filename,data,symbol='#'):
-    with open(filename, 'w') as csvfile:
-        spamwriter = csv.writer(csvfile, delimiter=',',quotechar='|')#, quoting=csv.QUOTE_MINIMAL)
-
-        keys = list(data.keys())
-        print(keys)
-        header = [symbol]+list(data[keys[0]].keys())
-        spamwriter.writerow(header)
-        for key in data.keys():
-            row = [key]+[data[key][k] for k in data[key].keys()]
-            spamwriter.writerow(row)
 
 def time_sync(phone,n=1000,timeout=0.1):
     ip = connect.get_adress(phone)
@@ -185,7 +176,7 @@ def main():
 
         savefolder = '/home/turbots/Documents/Bicwin2024/git/phonefleet/phonefleet/Bic25/Tsync/' 
         filename = savefolder+'tsync_'+str(int(np.round(time.time())))
-        writedict_csv(filename,results)
+        rw_data.writedict_csv(filename,results)
 
 if __name__=='__main__':    
     main()

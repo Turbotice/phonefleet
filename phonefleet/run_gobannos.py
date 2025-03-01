@@ -68,11 +68,17 @@ def get_today_file_list(ip):
     pprint('Number of today files :'+str(len(filelist)))
     return filelist
 
-def load_data():
-    pprint(filelist)
+def get_file(ip,filename):
+    try:
+        a = urllib.request.urlopen(f"http://{ip}:{port}/get-file/"+filename).read()
+    except urllib.request.http.client.IncompleteRead as e:
+        print(f"Phone {phone}, file {filename} incomplete")
+        a = e.partial
+    #name = filename.split('.')[-2]
+    #data = decode(a)
+    #dic = read_data(data,name)
+    return a
 
-def get_file(filename):
-    pass
 
 def individual_stop(ip):
     a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['stop']).read()
