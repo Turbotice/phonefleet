@@ -13,6 +13,9 @@ import rw_data
 import socket
 import platform
 
+def get_os():
+    return platform.platform().split('-')[0]
+
 def get_folder():
     ostype = platform.platform().split('-')[0]
     osname = socket.gethostname()
