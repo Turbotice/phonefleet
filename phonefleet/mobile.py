@@ -6,6 +6,8 @@ import time
 import numpy as np
 
 import tsync
+import tsync_windows
+
 import run_gobannos as gob
 import connect
 import rw_data
@@ -126,7 +128,11 @@ def time_sync(network,phonelist,iter=5):
             status = gob.get_status(ip)
             print(status)
             print(ip)
-            Dt = tsync.time_sync_ip(ip,n=100,timeout=0.1)
+
+            if get_os()=='linux' or get_os()=='localhost':
+                Dt = tsync.time_sync_ip(ip,n=100,timeout=0.1)
+            else:
+                Dt = tsync_windows.time_sync_ip(ip,n=100,timeout=0.1)
             print(Dt)
             if Dt is not None:
                 result = get_lag(Dt)
@@ -200,8 +206,8 @@ def defaults():
         phonelist = [1,2,3,4,5]
         network = 47
     elif ostype=='macOS':
-        phonelist = [8]
-        network = 1
+        phonelist = [5]
+        network = 2
     else:
         phonelist = [8]
         network = 1
