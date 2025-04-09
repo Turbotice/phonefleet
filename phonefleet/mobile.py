@@ -29,6 +29,8 @@ def get_folder():
         folder= 'Phonefleet/'
     else:
         folder= 'Phonefleet/'
+
+        
     return folder
 
 def set_network():
