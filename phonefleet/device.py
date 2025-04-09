@@ -347,8 +347,8 @@ class Device:
             # Make sure we close the socket even on error
             try:
                 sock.close()
-            except:
-                pass
+            except Exception as close_error:
+                logger.error(f"Error closing socket: {close_error}")
                 return None
 
     def _get_lag_stats(self, Dt: Dict) -> Union[Dict, None]:
