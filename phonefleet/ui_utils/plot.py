@@ -2,8 +2,10 @@ import pandas as pd
 import io
 import plotly.graph_objects as go
 
+from ui_utils.fleet import file_path_to_sensor
 
-def plot(csv_data: str):
+
+def plot(csv_data: str, filename: str) -> go.Figure:
     cleaned_csv_data = "\n".join(
         [line.strip().rstrip(",") for line in csv_data.strip().split("\n")]
     )
@@ -16,6 +18,8 @@ def plot(csv_data: str):
 
     # Create the figure
     fig = go.Figure()
+
+    data_type = file_path_to_sensor(filename)
 
     # Plot each reading against the timestamp
     for col, color in zip(
@@ -33,7 +37,7 @@ def plot(csv_data: str):
 
     # Update layout
     fig.update_layout(
-        title="Magnetic Readings Over Time",
+        title=f"{data_type.capitalize()} Readings Over Time",
         xaxis_title="Timestamp",
         yaxis_title="Reading Value",
         template="plotly_white",

@@ -12,7 +12,6 @@ from ui_utils.plot import plot
 from ui_utils.log_handler import logger, log_view
 from ui_utils.buttons_enabler import disable_buttons
 
-
 logger.setLevel(logging.DEBUG)
 
 
@@ -29,6 +28,10 @@ def files_table(files):
     # return ui.aggrid(
     return AgGrid(
         {
+            "pagination": True,
+            "paginationPageSize": 5,
+            "paginationPageSizeSelector": [5, 10, 25, 50],
+            "domLayout": "autoHeight",
             "rowData": files,
             "columnDefs": [
                 {
@@ -103,7 +106,7 @@ def files_table(files):
                 "autoHeight": True,
             },
         }
-    ).classes("w-full")
+    ).classes("w-full h-full")
 
 
 @ui.refreshable
@@ -119,8 +122,8 @@ def plot_view(file_plots: dict):
         )
         if select["value"]:
             with disable_buttons():
-                figure = plot(select["value"])
-                ui.plotly(figure)
+                figure = plot(select["value"], filename=file_plots[select["value"]])
+                ui.plotly(figure).classes("w-full h-full min-h-50vh")
 
 
 @ui.refreshable
@@ -190,12 +193,17 @@ def files_view(files):
 
 @ui.refreshable
 def table(fleet):
-    # grid = ui.aggrid(
     grid = AgGrid(
         {
+            "pagination": True,
+            "paginationPageSize": 10,
+            "paginationPageSizeSelector": [10, 25, 50],
+            "domLayout": "autoHeight",
             "rowHeight": 50,
             "rowData": fleet_to_dict(fleet),
             ":getRowId": "(params) => params.data.ip",
+            "tooltipInteraction": True,
+            "tooltipHideDelay": 40000,
             "rowSelection": {
                 "mode": "multiRow",
                 "headerCheckbox": True,
@@ -212,7 +220,6 @@ def table(fleet):
                     "filterParams": {
                         "applyMiniFilterWhileTyping": True,
                     },
-                    # "checkboxSelection": True,
                 },
                 {
                     "headerName": "MAC",
@@ -223,6 +230,25 @@ def table(fleet):
                     "filterParams": {
                         "applyMiniFilterWhileTyping": True,
                     },
+                    "tooltipField": "metadata",
+                    "cellClassRules": {
+                        "underline decoration-4 decoration-sky-800": "data.metadata !== null"
+                    },
+                },
+                {
+                    "headerName": "Last sync",
+                    "field": "last_sync",
+                    "filter": "agTextColumnFilter",
+                    "floatingFilter": True,
+                    "filterParams": {
+                        "applyMiniFilterWhileTyping": True,
+                        "filterOptions": [
+                            "equals",
+                            "lessThan",
+                            "greaterThan",
+                            "inRange",
+                        ],
+                    },
                 },
                 {
                     "headerName": "Status",
@@ -232,7 +258,7 @@ def table(fleet):
                     "filterParams": {
                         "applyMiniFilterWhileTyping": True,
                     },
-                    "cellClass": "text-center uppercase rounded-md py-0.5 px-0.5 border max-h-8 max-w-24 m-2 border-transparent text-xs text-white transition-all shadow-sm",
+                    "cellClass": "inline-block px-3 py-1 rounded-full text-sm font-semibold uppercase text-white max-w-fit max-h-fit m-2",
                     "cellClassRules": {
                         # running
                         "bg-green-600": f'x === "{DeviceStatus.RECORDING.value}"',
@@ -253,7 +279,7 @@ def table(fleet):
                 "autoHeight": True,
             },
         }
-    ).classes("w-full")
+    ).classes("w-full h-full")
     return grid
 
 
@@ -341,6 +367,9 @@ def devices_view(fleet: dict[str, Device]):
         for row in rows:
             res = await run.io_bound(lambda d: d.update_status(), fleet[row["ip"]])
             grid.run_row_method(row["ip"], "setDataValue", "status", res)
+            grid.run_row_method(
+                row["ip"], "setDataValue", "last_sync", fleet[row["ip"]].last_sync
+            )
 
     async def get_files_list():
         res = await run_on_selected_devices(lambda d: d.get_file_list())
@@ -420,7 +449,7 @@ async def scan(scanner, start_offset=0, max_hosts=10, tries: int = 1):
 def scan_view():
     with ui.row().classes("w-full self-center justify-between"):
         offset_input = ui.number(
-            "Start IP", value=100, precision=0, min=0, max=256, step=1
+            "Start IP", value=1, precision=0, min=0, max=256, step=1
         )
         max_hosts_input = ui.number(
             "Max hosts", value=1, precision=0, min=1, max=256, step=1
@@ -475,11 +504,12 @@ def main_page():
                 )
     with ui.tab_panels(tabs, value="h").classes("w-full"):
         with ui.tab_panel("h"):
-            with ui.card(align_items="center").classes("w-full"):
-                with ui.row().classes("w-4/5 self-center"):
-                    scan_view()
-                with ui.row().classes("w-full h-full self-center"):
-                    devices_view(sample_fleet)
+            with ui.column().classes("w-full"):
+                with ui.card(align_items="center").classes("w-full"):
+                    with ui.row().classes("w-4/5 self-center"):
+                        scan_view()
+                    with ui.row().classes("w-full self-center h-80vh"):
+                        devices_view(sample_fleet)
         with ui.tab_panel("a"):
             with ui.card(align_items="center").classes("w-full"):
                 files_view(fleet_files)

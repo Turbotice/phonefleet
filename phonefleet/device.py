@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import datetime
 from typing import Optional, Dict, Union
 import numpy as np
 import time
@@ -12,6 +13,7 @@ from ui_utils.utils import plural
 
 # from ui_utils.network_scanner import NetworkDevice, NetworkScanner
 from ui_utils.tcp_scanner import NetworkDevice, NetworkScanner
+from ui_utils.device_metadata import DeviceMetadata
 
 
 class Commands:
@@ -47,9 +49,11 @@ class Device:
         self.ip = ip
         self.port = port
         self.mac = mac
+        self.metadata = DeviceMetadata.from_mac(mac)
         self.experiment = None
         # a dict of filepath to content
         self.files = defaultdict()
+        self.last_sync = None
 
         self.id = Device.GLOBAL_ID
         Device.GLOBAL_ID += 1
@@ -62,11 +66,18 @@ class Device:
 
     @classmethod
     def from_network_device(cls, network_device: NetworkDevice) -> "Device":
-        return cls(
+        instance = cls(
             ip=network_device.ip,
             mac=network_device.mac,
             name=network_device.hostname,
         )
+        try:
+            instance.status = DeviceStatus.from_string(
+                network_device.endpoint_result.splitlines()[-1].strip()
+            )
+        except KeyError:
+            instance.status = DeviceStatus.UNKNOWN
+        return instance
 
     def __str__(self) -> str:
         # Return a string representation of the device
@@ -189,6 +200,8 @@ class Device:
         logger.info(
             f"Time sync with {self.name}: lag={lag_stats['tlag'] * 1000:.2f}ms, std={lag_stats['tstd'] * 1000:.2f}ms"
         )
+        self.lag_stats = lag_stats
+        self.last_sync = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return lag_stats
 
     def _time_sync(self, n: int = 1000, timeout: float = 0.1) -> Union[Dict, None]:

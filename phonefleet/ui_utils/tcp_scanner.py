@@ -25,6 +25,7 @@ class NetworkDevice:
     mac: Optional[str] = None
     hostname: Optional[str] = None
     is_http_endpoint_available: bool = False
+    endpoint_result: Optional[str] = None
 
     def __str__(self) -> str:
         return f"Device(ip={self.ip}, mac={self.mac}, hostname={self.hostname}, http_available={self.is_http_endpoint_available})"
@@ -140,7 +141,9 @@ class NetworkScanner:
         except (socket.herror, socket.gaierror):
             return None
 
-    def _check_endpoint(self, device: NetworkDevice, path: str = "status") -> bool:
+    def _check_endpoint(
+        self, device: NetworkDevice, path: str = "status"
+    ) -> Optional[str]:
         """Check if the device responds to HTTP requests on the target port and specified path."""
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -165,18 +168,23 @@ class NetworkScanner:
                 s.close()
 
                 # If we got any response, consider the endpoint available
-                return len(response) > 0
+                # return len(response) > 0
+                # check if we got a 200 response
+                if response.startswith(b"HTTP/1.1 200"):
+                    return response.decode(errors="ignore")
+                else:
+                    return None
             else:
                 # Timeout occurred waiting for response
                 logger.debug(
                     f"Timeout waiting for HTTP response from {device.ip}:{self.target_port}/{path}"
                 )
                 s.close()
-                return False
+                return None
 
         except (socket.timeout, socket.error, ConnectionRefusedError) as e:
             logger.debug(f"HTTP endpoint check failed for {device.ip}: {e}")
-            return False
+            return None
 
     def _scan_host(self, ip: str, tries: int = 1) -> Optional[NetworkDevice]:
         """Scan a single host for the target port."""
@@ -198,12 +206,20 @@ class NetworkScanner:
                     device.hostname = self._get_hostname(ip)
 
                     # Check specific HTTP endpoint with proper timeout handling
-                    endpoint_result = self._check_endpoint(device)
-                    device.is_http_endpoint_available = endpoint_result
-
-                    logger.debug(
-                        f"Device {ip} has port {self.target_port} open, endpoint available: {endpoint_result}"
+                    device.endpoint_result = self._check_endpoint(device)
+                    device.is_http_endpoint_available = (
+                        device.endpoint_result is not None
                     )
+
+                    if device.is_http_endpoint_available:
+                        logger.debug(
+                            f"Device {ip} has port {self.target_port} open, endpoint available: {device.endpoint_result}"
+                        )
+                    else:
+                        logger.debug(
+                            f"Device {ip} has port {self.target_port} open, but endpoint is not available."
+                        )
+
                     return device
             except Exception as e:
                 logger.debug(f"Error scanning {ip}: {e}")

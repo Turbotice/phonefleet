@@ -1,10 +1,7 @@
-"""
-#identification;Adresse MAC;Mem;Date mise en service;mdp;Etiqueté;Wi-Fi;ADB Debog +;Mode dev + adb WIFI;PhyHack;Gobannos;Compte MI;SIM;Commentaire
-XRed10_0;94:7b:ae:48:62:74;128;15/10/23;_01012000;Oui;Oui;Oui;;Oui;Oui;Turbots;AE;
-XRed10_1;e0:80:6b:1e:f8:aa;64;15/10/23;_01012000;Oui;Oui;Oui;Oui;Oui;Oui;Turbots;SP;
-"""
-
 from dataclasses import dataclass
+import json
+from ui_utils.defaults import DEFAULT_INVENTORY_FILE
+from ui_utils.log_handler import logger
 
 
 HEADER_TRANSLATION = {
@@ -25,21 +22,21 @@ HEADER_TRANSLATION = {
 }
 
 
-def build_table(csv_data: str) -> dict[str, dict[str, str]]:
-    lines = csv_data.split("\n")
-    header = lines[0].split(";")
-    header = [HEADER_TRANSLATION.get(h, h) for h in header]
-    table = {}
-    for line in lines[1:]:
-        if not line:
-            continue
-        parts = line.split(";")
-        table[parts[0]] = {header[i]: parts[i] for i in range(len(header))}
-    return table
-
-
 @dataclass
 class DeviceMetadata:
+    """
+    A builder class for device metadata.
+    The TABLE class variable is a dictionary that maps MAC addresses to device metadata.
+    The init_table_from_file method initializes the TABLE variable from a CSV file.
+    The from_mac method retrieves the metadata for a given MAC address.
+    Example usage:
+    # setup the DeviceMetadata class
+    DeviceMetadata.init_table_from_file("path/to/your/csvfile.csv")
+    # we can now retrieve metadata for a specific device
+    metadata = DeviceMetadata.from_mac("00:11:22:33:44:55")
+    print(metadata.name)
+    """
+
     name: str
     mac: str
     mem: str
@@ -55,6 +52,39 @@ class DeviceMetadata:
     sim: str
     comment: str
 
+    TABLE = {}
+
     @classmethod
-    def from_mac(cls, table: dict[str, dict[str, str]], mac: str) -> "DeviceMetadata":
-        return cls(**table[mac])
+    def from_mac(cls, mac: str) -> "DeviceMetadata":
+        try:
+            return cls(**cls.TABLE[mac])
+        except KeyError:
+            # raise KeyError(f"Device with MAC {mac} not found in metadata table.")
+            logger.error(f"Device with MAC {mac} not found in metadata table.")
+            return None
+    
+    def as_dict(self) -> dict[str, str]:
+        return {field: getattr(self, field) for field in self.__dataclass_fields__}
+
+    @classmethod
+    def init_table_from_file(cls, csv_file: str):
+        with open(csv_file, "r") as f:
+            csv_data = f.read()
+        cls.TABLE = cls.build_table(csv_data)
+
+    @classmethod
+    def build_table(cls, csv_data: str) -> dict[str, dict[str, str]]:
+        lines = csv_data.split("\n")
+        header = lines[0].split(";")
+        header = [HEADER_TRANSLATION.get(h, h) for h in header]
+        table = {}
+        for line in lines[1:]:
+            if not line:
+                continue
+            parts = line.split(";")
+            # index by mac
+            table[parts[1]] = {header[i]: parts[i] for i in range(len(header))}
+        return table
+
+
+DeviceMetadata.init_table_from_file(DEFAULT_INVENTORY_FILE)
