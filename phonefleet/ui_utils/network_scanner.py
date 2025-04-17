@@ -7,7 +7,7 @@ import ipaddress
 import time
 from dataclasses import dataclass
 from typing import List, Optional, Dict
-from ui_utils.log_handler import logger
+from phonefleet.ui_utils.log_handler import logger
 import netifaces
 
 

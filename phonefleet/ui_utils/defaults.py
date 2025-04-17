@@ -1,1 +1,1 @@
-DEFAULT_INVENTORY_FILE = "phonefleet/ui_utils/data/default_inventory.csv"
+DEFAULT_INVENTORY_FILE = "data/default_inventory.csv"

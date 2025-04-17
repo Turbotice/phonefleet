@@ -1,6 +1,5 @@
-import json
 from datetime import datetime
-from device import Device
+from phonefleet.device import Device
 
 
 def fleet_to_dict(fleet: dict[str, Device]) -> list[dict]:
@@ -60,7 +59,7 @@ def fleet_to_files(fleet: dict[str, Device]) -> list[dict]:
     return [
         {
             "filepath": f,
-            "device": ip,
+            "device_ip": ip,
             "sensor": file_path_to_sensor(f),
             "experiment": extract_experiment_name(f),
             "date": extract_date(f),

@@ -8,12 +8,12 @@ import requests
 from enum import Enum
 
 
-from ui_utils.log_handler import logger
-from ui_utils.utils import plural
+from phonefleet.ui_utils.log_handler import logger
+from phonefleet.ui_utils.utils import plural
 
 # from ui_utils.network_scanner import NetworkDevice, NetworkScanner
-from ui_utils.tcp_scanner import NetworkDevice, NetworkScanner
-from ui_utils.device_metadata import DeviceMetadata
+from phonefleet.ui_utils.tcp_scanner import NetworkDevice, NetworkScanner
+from phonefleet.ui_utils.device_metadata import DeviceMetadata
 
 
 class Commands:

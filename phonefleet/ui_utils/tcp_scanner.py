@@ -1,14 +1,11 @@
 import socket
-import struct
 import subprocess
 import time
 import logging
 import re
-import threading
-import queue
 import platform
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Tuple
+from typing import List, Optional, Tuple
 import ipaddress
 import concurrent.futures
 

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-import json
-from ui_utils.defaults import DEFAULT_INVENTORY_FILE
-from ui_utils.log_handler import logger
+from phonefleet.ui_utils.defaults import DEFAULT_INVENTORY_FILE
+from phonefleet.ui_utils.log_handler import logger
 
 
 HEADER_TRANSLATION = {
@@ -62,15 +61,19 @@ class DeviceMetadata:
             # raise KeyError(f"Device with MAC {mac} not found in metadata table.")
             logger.error(f"Device with MAC {mac} not found in metadata table.")
             return None
-    
+
     def as_dict(self) -> dict[str, str]:
         return {field: getattr(self, field) for field in self.__dataclass_fields__}
 
     @classmethod
     def init_table_from_file(cls, csv_file: str):
-        with open(csv_file, "r") as f:
-            csv_data = f.read()
-        cls.TABLE = cls.build_table(csv_data)
+        try:
+            with open(csv_file, "r") as f:
+                csv_data = f.read()
+            cls.TABLE = cls.build_table(csv_data)
+        except FileNotFoundError:
+            logger.error(f"File {csv_file} not found. Metadata table will be empty.")
+            cls.TABLE = {}
 
     @classmethod
     def build_table(cls, csv_data: str) -> dict[str, dict[str, str]]:
