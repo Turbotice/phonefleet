@@ -14,5 +14,5 @@ pip install -r requirements.txt
 
 ```bash
 source venv/bin/activate
-python phonefleet/app.py
+python app.py
 ```
