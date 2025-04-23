@@ -262,6 +262,9 @@ def files_view(files, fleet):
             logger.info(
                 f"Downloaded {total_files} byte{plural(total_files)} from {len(res)} device{plural(res)}"
             )
+            ui.notify(
+                f"Downloaded {total_files} byte{plural(total_files)} from {len(res)} device{plural(res)}"
+            )
             for k, v in res.items():
                 ui.download(v.encode(), filename=k)
 
@@ -278,7 +281,10 @@ def files_view(files, fleet):
                 plot_view.refresh(res)
             total_files = sum(len(v) for v in res.values())
             logger.info(
-                f"Downloaded {total_files} files from {len(res)} device{plural(res)}"
+                f"Downloaded {total_files} bytes from {len(res)} device{plural(res)}"
+            )
+            ui.notify(
+                f"Downloaded {total_files} bytes from {len(res)} device{plural(res)}"
             )
             plot_view.refresh(res)
 
