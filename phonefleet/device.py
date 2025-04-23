@@ -226,20 +226,14 @@ class Device:
         # Create a single socket for both sending and receiving
         try:
             # Close any existing sockets first to release port 5001
-            # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            # sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-            # try:
-            #     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-            # except AttributeError:
-            #     # SO_REUSEPORT not available on this system
-            #     pass
 
             # Bind to wildcard address with port 5001
             try:
-                # sock.bind(("0.0.0.0", 5001))  # Use 0.0.0.0 instead of "" for clarity
-                sock.bind(("::", 5001))  # Use 0.0.0.0 instead of "" for clarity
+                sock.bind(("0.0.0.0", 5001))  # Use 0.0.0.0 instead of "" for clarity
+                # sock.bind(("::", 5001))  # Use 0.0.0.0 instead of "" for clarity
             except Exception as e:
                 logger.warning(f"Failed to bind socket: {e}")
                 sock.close()
