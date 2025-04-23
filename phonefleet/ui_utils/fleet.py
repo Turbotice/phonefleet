@@ -20,7 +20,7 @@ def fleet_to_dict(fleet: dict[str, Device]) -> list[dict]:
 
 
 def file_path_to_sensor(file_path: str) -> str:
-    sensors = ["accelerometer", "gyroscope", "magnetic_field", "gps"]
+    sensors = ["accelerometer", "gyroscope", "magnetic_field", "gps", "usb"]
     for sensor in sensors:
         if sensor in file_path:
             return sensor

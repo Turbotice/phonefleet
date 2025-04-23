@@ -9,7 +9,7 @@ from phonefleet.ui_utils.aggrid import AgGrid
 from phonefleet.ui_utils.tcp_scanner import NetworkScanner
 from phonefleet.ui_utils.utils import plural
 from phonefleet.ui_utils.fleet import fleet_to_dict, fleet_to_files
-from phonefleet.ui_utils.plot import plot_subgraphs
+from phonefleet.ui_utils.plot import plot_subgraphs_dict
 from phonefleet.ui_utils.log_handler import logger, log_view
 from phonefleet.ui_utils.buttons_enabler import disable_buttons
 
@@ -131,13 +131,16 @@ def files_table(files):
 def plot_view(file_plots: dict):
     # invert the dictionary
     file_plots = {v: k for k, v in file_plots.items()}
-    # first_file = next(iter(file_plots.keys()), None)
 
     def plot_this(filename):
         plot_container.clear()
         with plot_container:
             ui.spinner()
-        figure = plot_subgraphs(select["value"], filename=file_plots[select["value"]])
+        figure = plot_subgraphs_dict(
+            select["value"],
+            filename=file_plots[select["value"]],
+            sample=0.1,
+        )
         plot_container.clear()
         with plot_container:
             ui.plotly(figure).classes("w-full h-full min-h-50vh")
@@ -551,7 +554,7 @@ async def scan(scanner, start_offset=0, max_hosts=10, tries: int = 1):
 def scan_view():
     with ui.row().classes("w-full self-center justify-between"):
         offset_input = ui.number(
-            "Start IP", value=1, precision=0, min=0, max=256, step=1
+            "Start IP", value=100, precision=0, min=0, max=256, step=1
         )
         max_hosts_input = ui.number(
             "Max hosts", value=1, precision=0, min=1, max=256, step=1
@@ -647,7 +650,7 @@ if __name__ in {"__main__", "__mp_main__"}:
                 "fullscreen": ("fullscreen" in args),
                 "native": True,
                 "dark": False,
-                "frameless": True,
+                "frameless": False,
                 "window_size": (1300, 800),
             }
         )

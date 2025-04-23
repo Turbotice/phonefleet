@@ -1,61 +1,28 @@
 import pandas as pd
 import io
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 from phonefleet.ui_utils.fleet import file_path_to_sensor
 
 
-def plot(csv_data: str, filename: str) -> go.Figure:
-    cleaned_csv_data = "\n".join(
-        [line.strip().rstrip(",") for line in csv_data.strip().split("\n")]
-    )
-
-    # Load the cleaned data into a pandas DataFrame
-    df = pd.read_csv(io.StringIO(cleaned_csv_data), header=None)
-    df.columns = ["timestamp", "reading_x", "reading_y", "reading_z"]
-    # Convert timestamp to datetime format
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
-
-    # Create the figure
-    fig = go.Figure()
-
-    data_type = file_path_to_sensor(filename)
-
-    # Plot each reading against the timestamp
-    for col, color in zip(
-        ["reading_x", "reading_y", "reading_z"], ["red", "green", "blue"]
-    ):
-        fig.add_trace(
-            go.Scatter(
-                x=df["timestamp"],
-                y=df[col],
-                mode="lines",
-                name=col,
-                line=dict(color=color),
-            )
-        )
-
-    # Update layout
-    fig.update_layout(
-        title=f"{data_type.capitalize()} Readings Over Time",
-        xaxis_title="Timestamp",
-        yaxis_title="Reading Value",
-        template="plotly_white",
-        legend_title="Readings",
-    )
-    return fig
-
-
-def plot_subgraphs(csv_data: str, filename: str) -> go.Figure:
+def plot_subgraphs_dict(csv_data: str, filename: str, sample: float = 0.1) -> go.Figure:
     # Clean the CSV data
+    # sample the data if sample is less than 1
     cleaned_csv_data = "\n".join(
         [line.strip().rstrip(",") for line in csv_data.strip().split("\n")]
     )
+    if sample < 1:
+        # Sample the data
+        lines = cleaned_csv_data.split("\n")
+        sampled_lines = lines[:: int(1 / sample)]
+        cleaned_csv_data = "\n".join(sampled_lines)
 
     # Load the cleaned data into a pandas DataFrame
     df = pd.read_csv(io.StringIO(cleaned_csv_data), header=None)
-    df.columns = ["timestamp", "reading_x", "reading_y", "reading_z"]
+    if df.shape[1] == 4:
+        df.columns = ["timestamp", "reading_x", "reading_y", "reading_z"]
+    else:
+        df.columns = ["timestamp"] + [f"reading_{i}" for i in range(1, df.shape[1])]
 
     # Convert timestamp to datetime format
     df["timestamp"] = pd.to_datetime(df["timestamp"])
@@ -63,52 +30,63 @@ def plot_subgraphs(csv_data: str, filename: str) -> go.Figure:
     # Extract data type from filename for the title
     data_type = file_path_to_sensor(filename)
 
-    # Create a figure with 3 subplots (stacked vertically)
-    fig = make_subplots(
-        rows=3,
-        cols=1,
-        shared_xaxes=True,  # Share x-axes among all subplots
-        vertical_spacing=0.1,  # Add some space between the plots
-        subplot_titles=(
-            f"{data_type.capitalize()} X Reading",
-            f"{data_type.capitalize()} Y Reading",
-            f"{data_type.capitalize()} Z Reading",
-        ),
-    )
-
-    # Colors for each reading
+    # Define colors and readings
     colors = ["red", "green", "blue"]
+    if df.shape[1] == 4:
+        readings = ["reading_x", "reading_y", "reading_z"]
+    else:
+        readings = [f"reading_{i}" for i in range(1, df.shape[1])]
 
-    # Add each reading as a separate subplot
-    readings = ["reading_x", "reading_y", "reading_z"]
+    # Build data traces using the dict interface
+    data_traces = []
+    for i, (reading, color) in enumerate(zip(readings, colors), start=1):
+        trace = {
+            "type": "scatter",
+            "mode": "lines",
+            "x": df["timestamp"],
+            "y": df[reading],
+            "name": reading,
+            "line": {"color": color},
+            # assign each trace to its own axis
+            "xaxis": f"x{i}",
+            "yaxis": f"y{i}",
+        }
+        data_traces.append(trace)
 
-    for i, (reading, color) in enumerate(zip(readings, colors), 1):
-        fig.add_trace(
-            go.Scatter(
-                x=df["timestamp"],
-                y=df[reading],
-                mode="lines",
-                name=reading,
-                line=dict(color=color),
-            ),
-            row=i,  # Place each trace in its own row
-            col=1,
-        )
+    # Build layout with grid for subplots
+    layout = {
+        "title": {"text": f"{data_type.capitalize()} Readings Over Time ({sample:.2%} sample)"},
+        "height": 900,
+        "template": "plotly_white",
+        "showlegend": False,
+        # define a 3x1 grid
+        "grid": {"rows": 3, "columns": 1, "pattern": "independent"},
+        # axis titles
+        # "yaxis": {"title": "X Value"},
+        # "yaxis2": {"title": "Y Value"},
+        # "yaxis3": {"title": "Z Value"},
+        # # only bottom x-axis shows title
+        # "xaxis3": {"title": "Timestamp"},
+        # # hide x-axis titles for top subplots
+        # "xaxis": {"visible": False},
+        # "xaxis2": {"visible": False},
+    }
+    if df.shape[1] == 4:
+        layout["yaxis"] = {"title": "X Value"}
+        layout["yaxis2"] = {"title": "Y Value"}
+        layout["yaxis3"] = {"title": "Z Value"}
+        layout["xaxis3"] = {"title": "Timestamp"}
+    else:
+        for i in range(1, df.shape[1]):
+            layout[f"yaxis{i}"] = {"title": f"Reading {i}"}
+            layout[f"xaxis{i}"] = {"title": "Timestamp"}
+            # hide x-axis titles for top subplots
+            if i < df.shape[1] - 1:
+                layout[f"xaxis{i}"] = {"visible": False}
 
-    # Update layout
-    fig.update_layout(
-        title=f"{data_type.capitalize()} Readings Over Time",
-        height=900,  # Increase height to accommodate three subplots
-        template="plotly_white",
-        showlegend=False,  # Hide legend as it's redundant with subplot titles
-    )
+    # Combine into a figure dict
+    fig_dict = {"data": data_traces, "layout": layout}
 
-    # Update y-axis titles for each subplot
-    fig.update_yaxes(title_text="X Value", row=1, col=1)
-    fig.update_yaxes(title_text="Y Value", row=2, col=1)
-    fig.update_yaxes(title_text="Z Value", row=3, col=1)
-
-    # Update x-axis title (only for the bottom subplot)
-    fig.update_xaxes(title_text="Timestamp", row=3, col=1)
-
+    # Create Figure
+    fig = go.Figure(fig_dict)
     return fig
