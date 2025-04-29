@@ -5,6 +5,7 @@ from phonefleet.device import Device
 def fleet_to_dict(fleet: dict[str, Device]) -> list[dict]:
     return [
         {
+            "name": d.name,
             "ip": d.ip,
             "mac": d.mac,
             "status": d.status.value,
@@ -60,6 +61,7 @@ def fleet_to_files(fleet: dict[str, Device]) -> list[dict]:
         {
             "filepath": f,
             "device_ip": ip,
+            "device_name": device.name or ip,
             "sensor": file_path_to_sensor(f),
             "experiment": extract_experiment_name(f),
             "date": extract_date(f),

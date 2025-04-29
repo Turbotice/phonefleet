@@ -3,22 +3,31 @@ import io
 import plotly.graph_objects as go
 
 from phonefleet.ui_utils.fleet import file_path_to_sensor
+from phonefleet.ui_utils.defaults import MAX_PLOT_POINTS
 
 
-def plot_subgraphs_dict(csv_data: str, filename: str, sample: float = 0.1) -> go.Figure:
+def plot_subgraphs_dict(csv_data: str, filename: str, t_offset=0) -> go.Figure:
     # Clean the CSV data
     # sample the data if sample is less than 1
     cleaned_csv_data = "\n".join(
         [line.strip().rstrip(",") for line in csv_data.strip().split("\n")]
     )
-    if sample < 1:
-        # Sample the data
-        lines = cleaned_csv_data.split("\n")
-        sampled_lines = lines[:: int(1 / sample)]
-        cleaned_csv_data = "\n".join(sampled_lines)
 
     # Load the cleaned data into a pandas DataFrame
     df = pd.read_csv(io.StringIO(cleaned_csv_data), header=None)
+    # Drop lines with timestamp == -1
+    df = df[df[0] != -1]
+    # Apply time offset
+    if t_offset != 0:
+        df[0] = df[0] + t_offset
+
+    if df.shape[0] > MAX_PLOT_POINTS:
+        # Take a sample of the data
+        sample = MAX_PLOT_POINTS / df.shape[0]
+        df = df.sample(frac=sample, random_state=1)
+    else:
+        sample = 1.0
+
     if df.shape[1] == 4:
         df.columns = ["timestamp", "reading_x", "reading_y", "reading_z"]
     else:
@@ -26,6 +35,10 @@ def plot_subgraphs_dict(csv_data: str, filename: str, sample: float = 0.1) -> go
 
     # Convert timestamp to datetime format
     df["timestamp"] = pd.to_datetime(df["timestamp"])
+
+    # Convert readings to numeric
+    for i in range(1, df.shape[1]):
+        df.iloc[:, i] = pd.to_numeric(df.iloc[:, i], errors="coerce")
 
     # Extract data type from filename for the title
     data_type = file_path_to_sensor(filename)
@@ -55,31 +68,25 @@ def plot_subgraphs_dict(csv_data: str, filename: str, sample: float = 0.1) -> go
 
     # Build layout with grid for subplots
     layout = {
-        "title": {"text": f"{data_type.capitalize()} Readings Over Time ({sample:.2%} sample)"},
+        "title": {
+            "text": f"{data_type.capitalize()} Readings Over Time ({sample:.2%} sample)"
+        },
         "height": 900,
         "template": "plotly_white",
         "showlegend": False,
-        # define a 3x1 grid
-        "grid": {"rows": 3, "columns": 1, "pattern": "independent"},
-        # axis titles
-        # "yaxis": {"title": "X Value"},
-        # "yaxis2": {"title": "Y Value"},
-        # "yaxis3": {"title": "Z Value"},
-        # # only bottom x-axis shows title
-        # "xaxis3": {"title": "Timestamp"},
-        # # hide x-axis titles for top subplots
-        # "xaxis": {"visible": False},
-        # "xaxis2": {"visible": False},
+        # define a grid based on the number of readings
+        "grid": {"rows": df.shape[1] - 1, "columns": 1, "pattern": "independent"},
     }
+    timestamp_str = "Timestamp (with offset)" if t_offset != 0 else "Timestamp"
     if df.shape[1] == 4:
         layout["yaxis"] = {"title": "X Value"}
         layout["yaxis2"] = {"title": "Y Value"}
         layout["yaxis3"] = {"title": "Z Value"}
-        layout["xaxis3"] = {"title": "Timestamp"}
+        layout["xaxis3"] = {"title": timestamp_str}
     else:
         for i in range(1, df.shape[1]):
             layout[f"yaxis{i}"] = {"title": f"Reading {i}"}
-            layout[f"xaxis{i}"] = {"title": "Timestamp"}
+            layout[f"xaxis{i}"] = {"title": timestamp_str}
             # hide x-axis titles for top subplots
             if i < df.shape[1] - 1:
                 layout[f"xaxis{i}"] = {"visible": False}

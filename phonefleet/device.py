@@ -57,11 +57,30 @@ class Device:
 
         self.id = Device.GLOBAL_ID
         Device.GLOBAL_ID += 1
+        self.name = None
         if name is None:
-            self.name = f"Phone-{str(self.ip).split('.')[-1]}"
+            # fetch from metadata
+            if self.metadata is not None:
+                self.name = self.metadata.name
+            else:
+                # fallback to IP address
+                self.name = f"Phone-{str(self.ip).split('.')[-1]}"
         else:
             self.name = name
         self.status = DeviceStatus.UNKNOWN
+        self.lag_stats = {
+            "tlag": None,
+            "dtmedian": None,
+            "tmin": None,
+            "tmax": None,
+            "tstd": None,
+            "n": None,
+            "n_filtered": None,
+            "t0": None,
+            "device_id": self.id,
+            "device_name": self.name,
+            "device_ip": self.ip,
+        }
         # self.update_status()
 
     @classmethod
@@ -173,13 +192,16 @@ class Device:
         self.files[filename] = res
         return res
 
-    def time_sync(self, n: int = 1000, timeout: float = 0.1) -> Dict:
+    def time_sync(
+        self, n: int = 1000, timeout: float = 0.1, ipv6: bool = False
+    ) -> Dict:
         """
         Perform time synchronization with the device.
 
         Args:
             n: Number of synchronization packets to send
             timeout: Socket timeout in seconds
+            ipv6: Whether to use IPv6 for synchronization
 
         Returns:
             Dictionary with time lag statistics or None if sync failed
@@ -204,7 +226,9 @@ class Device:
         self.last_sync = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return lag_stats
 
-    def _time_sync(self, n: int = 1000, timeout: float = 0.1) -> Union[Dict, None]:
+    def _time_sync(
+        self, n: int = 1000, timeout: float = 0.1, ipv6: bool = False
+    ) -> Union[Dict, None]:
         """
         Internal method to perform UDP-based time synchronization with device.
 
@@ -226,14 +250,21 @@ class Device:
         # Create a single socket for both sending and receiving
         try:
             # Close any existing sockets first to release port 5001
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            # sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+
+            if ipv6:
+                sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+            else:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
             # Bind to wildcard address with port 5001
             try:
-                sock.bind(("0.0.0.0", 5001))  # Use 0.0.0.0 instead of "" for clarity
-                # sock.bind(("::", 5001))  # Use 0.0.0.0 instead of "" for clarity
+                if ipv6:
+                    sock.bind(("::", 5001))  # Use 0.0.0.0 instead of "" for clarity
+                else:
+                    sock.bind(
+                        ("0.0.0.0", 5001)
+                    )  # Use 0.0.0.0 instead of "" for clarity
             except Exception as e:
                 logger.warning(f"Failed to bind socket: {e}")
                 sock.close()
