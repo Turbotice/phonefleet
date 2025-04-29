@@ -267,10 +267,11 @@ def devices_view(fleet: dict[str, Device]):
         n_tries_input = ui.number(
             "Probes", value=20, min=1, max=1000, step=1, precision=0
         )
-        ipv6_input = ui.checkbox("IPv6", value=False).set_visibility(False)
+        # ipv6_input = ui.checkbox("IPv6", value=False)
         ui.button(
             "Time sync",
-            on_click=lambda: time_sync(n=n_tries_input.value, ipv6=ipv6_input.value),
+            # on_click=lambda: time_sync(n=n_tries_input.value, ipv6=ipv6_input.value),
+            on_click=lambda: time_sync(n=n_tries_input.value, ipv6=False),
             icon="alarm",
         )
         ui.button(

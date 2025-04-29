@@ -1,6 +1,7 @@
 from nicegui import ui
 from phonefleet.ui_utils.plot import plot_subgraphs_dict
 from phonefleet.ui_utils.log_handler import logger
+from phonefleet.ui_utils.utils import plural
 
 
 @ui.refreshable
@@ -29,15 +30,16 @@ def plot_view(file_plots: dict):
     with ui.column().classes("w-full"):
         select = dict()
         options = list(file_plots.keys())
-        ui.label(f"{len(options)} files available").classes(
+        ui.label(f"{len(options)} file{plural(options)} available").classes(
             "text-slate-900 text-lg font-bold mb-2"
         )
-        ui.label("Select file to plot").classes("text-2xl font-bold")
         default = options[0] if len(options) > 0 else None
         select = dict() if default is None else {"value": default}
-        ui.select(options, label="Select file to plot", value=default).bind_value_to(
-            select
-        ).on_value_change(plot_this)
+        with ui.row():
+            ui.label("Select file to plot").classes("text-2xl font-bold")
+            ui.select(options, value=default).bind_value_to(select).on_value_change(
+                plot_this
+            )
     plot_container = ui.row().classes("w-full h-full min-h-50vh")
     if default is not None:
         plot_this(None)
