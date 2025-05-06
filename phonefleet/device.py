@@ -370,7 +370,16 @@ class Device:
 
             if len(duration) == 0:
                 logger.warning(f"No successful time measurements with {self.name}")
-                return None
+                if not ipv6:
+                    # retry with IPv6
+                    logger.info(
+                        f"Retrying time sync with {self.name} using IPv6"
+                    )
+                    return self._time_sync(
+                        n=n, timeout=timeout, ipv6=True
+                    )
+                else:
+                    return None
 
             # Convert lists to numpy arrays and return data
             Dt["time"] = t0
