@@ -90,17 +90,16 @@ def files_table(files):
                     "filterParams": {
                         "applyMiniFilterWhileTyping": True,
                     },
-                    # "cellClass": "inline-block px-3 py-1 rounded-full border-4 text-sm font-semibold uppercase max-w-fit max-h-fit m-2",
-                    "cellClass": "text-sm font-semibold uppercase max-w-fit max-h-fit m-2",
+                    "cellClass": "text-sm font-semibold uppercase",
                     "cellClassRules": {
                         # accelerometer
-                        "border-green-600 text-green-600": 'data.sensor === "accelerometer"',
+                        "text-green-600": 'data.sensor === "accelerometer"',
                         # gyroscope
-                        "border-blue-600 text-blue-600": 'data.sensor === "gyroscope"',
+                        "text-blue-600": 'data.sensor === "gyroscope"',
                         # magnetic field
-                        "border-purple-600 text-purple-600": 'data.sensor === "magnetic_field"',
+                        "text-purple-600": 'data.sensor === "magnetic_field"',
                         # gps
-                        "border-red-600 text-red-600": 'data.sensor === "gps"',
+                        "text-red-600": 'data.sensor === "gps"',
                     },
                 },
             ],
@@ -236,13 +235,15 @@ def files_view(files, fleet):
                     fleet[file_row["device_ip"]].get_file(file_row["filepath"]),
                 )
 
+            plot_view.refresh(None, spinner=True)
+
             res = await run_on_selected_files(plot_file)
             if len(res) == 0:
                 logger.error(res)
                 ui.notify("No file selected.")
                 return
             else:
-                plot_view.refresh(res)
+                plot_view.refresh(res, spinner=False)
             total_files = sum(len(v) for _d, v in res.values())
             logger.info(
                 f"Downloaded {total_files} bytes from {len(res)} device{plural(res)}"
