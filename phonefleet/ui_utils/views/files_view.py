@@ -194,26 +194,23 @@ def files_view(files, fleet):
             )
 
         async def run_on_selected_files(func):
-            with disable_buttons():
-                rows = await files_grid.get_selected_rows()
-                res = dict()
-                if rows:
-                    for row in rows:
-                        try:
-                            ui.notify(
-                                f"Running on {row['filepath']}/{row['device_name']}"
-                            )
-                            v = await run.io_bound(func, row)
-                            if v is not None:
-                                res[f"{row['device_name']}_{row['filepath']}"] = v
-                        except Exception as e:
-                            logger.error(
-                                f"Files: Error while running on {row['filepath']}/{row['device_name']}: {e}"
-                            )
-                            logger.exception(e)
-                else:
-                    ui.notify("No device selected.")
-                return res
+            rows = await files_grid.get_selected_rows()
+            res = dict()
+            if rows:
+                for row in rows:
+                    try:
+                        ui.notify(f"Running on {row['filepath']}/{row['device_name']}")
+                        v = await run.io_bound(func, row)
+                        if v is not None:
+                            res[f"{row['device_name']}_{row['filepath']}"] = v
+                    except Exception as e:
+                        logger.error(
+                            f"Files: Error while running on {row['filepath']}/{row['device_name']}: {e}"
+                        )
+                        logger.exception(e)
+            else:
+                ui.notify("No device selected.")
+            return res
 
         async def download_files():
             ui.notify("Downloading files...")
