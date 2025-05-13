@@ -34,7 +34,7 @@ def plot_subgraphs_dict(csv_data: str, filename: str, t_offset=0) -> go.Figure:
         df.columns = ["timestamp"] + [f"reading_{i}" for i in range(1, df.shape[1])]
 
     # Convert timestamp to datetime format
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    df["timestamp"] = pd.to_datetime(df["timestamp"], unit="us")
 
     # sort the DataFrame by timestamp
     df = df.sort_values(by="timestamp")

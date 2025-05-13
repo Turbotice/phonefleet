@@ -16,7 +16,7 @@ def plot_graph(filename=None, device=None, csv_data=None):
         logger.warning(f"t_offset is None for {filename}, using 0 instead")
         t_offset = 0
     else:
-        t_offset = t_offset * 1e9
+        t_offset = t_offset * 1e6
     figure = plot_subgraphs_dict(csv_data, filename=filename, t_offset=t_offset)
     ui.plotly(figure).classes("w-full h-full min-h-50vh")
     plot_spinner_view.refresh(False)
