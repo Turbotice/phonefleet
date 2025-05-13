@@ -54,10 +54,12 @@ def plot_select_view(file_plots: dict):
                 update_plot
             )
 
+
 @ui.refreshable
 def plot_spinner_view(spinner=False):
     if spinner:
         ui.spinner().props("size=lg").classes("text-slate-900")
+
 
 @ui.refreshable
 def plot_view(file_plots: dict, spinner=False):

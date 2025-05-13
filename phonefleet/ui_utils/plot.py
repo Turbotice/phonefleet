@@ -36,6 +36,9 @@ def plot_subgraphs_dict(csv_data: str, filename: str, t_offset=0) -> go.Figure:
     # Convert timestamp to datetime format
     df["timestamp"] = pd.to_datetime(df["timestamp"])
 
+    # sort the DataFrame by timestamp
+    df = df.sort_values(by="timestamp")
+
     # Convert readings to numeric
     for i in range(1, df.shape[1]):
         df.iloc[:, i] = pd.to_numeric(df.iloc[:, i], errors="coerce")

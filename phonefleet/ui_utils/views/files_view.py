@@ -244,7 +244,7 @@ def files_view(files, fleet):
                 return
             else:
                 plot_view.refresh(res, spinner=False)
-            total_files = sum(len(v) for _d, v in res.values())
+            total_files = sum(len(v) if v else 0 for _d, v in res.values())
             logger.info(
                 f"Downloaded {total_files} bytes from {len(res)} device{plural(res)}"
             )
