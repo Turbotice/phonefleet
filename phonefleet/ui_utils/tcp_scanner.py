@@ -1,4 +1,6 @@
 import socket
+import threading
+import psutil
 import subprocess
 import time
 import logging
@@ -30,7 +32,11 @@ class NetworkDevice:
 
 class NetworkScanner:
     def __init__(
-        self, scan_delay: float = 0.5, timeout: float = 1.0, target_port: int = 8080
+        self,
+        scan_delay: float = 0.5,
+        timeout: float = 1.0,
+        target_port: int = 8080,
+        interface: Optional[str] = None,
     ):
         """Initialize the network scanner.
 
@@ -46,40 +52,87 @@ class NetworkScanner:
         self.scanning = False
         self.scan_progress = 0.0  # Progress indicator (0.0 to 1.0)
         self.n_discovered_devices = 0
+
+        self.interface = interface
+        if self.interface is None:
+            self.interface = NetworkScanner.list_interfaces()[0]
+
+        self._stop_event = threading.Event()
+
         logger.debug(
             f"Initialized scanner on {self.os_platform} platform with delay={scan_delay}s, timeout={timeout}s"
         )
 
+    def stop(self):
+        """Stop the scanning process."""
+        self._stop_event.set()
+        logger.debug("Stopping scan...")
+        self.scanning = False
+
+    @staticmethod
+    def list_interfaces() -> List[str]:
+        """List available network interfaces with IPv4 addresses (excluding loopback)."""
+        interfaces = []
+        for iface_name, iface_addrs in psutil.net_if_addrs().items():
+            for addr in iface_addrs:
+                if addr.family == socket.AF_INET and not addr.address.startswith(
+                    "127."
+                ):
+                    interfaces.append(iface_name)
+                    break
+        return interfaces
+
     def get_network_info(self) -> Tuple[str, str, int]:
-        """Get local IP, subnet, and prefix length.
+        """Get local IP, subnet, and prefix length for a specific or first available interface.
+
+        Args:
+            interface: Optional name of the network interface.
 
         Returns:
             Tuple containing (local_ip, network_address, prefix_length)
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            # Connect to a public IP to determine which interface to use
-            s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
-        except Exception as e:
-            logger.error(f"Failed to determine local IP: {e}")
-            # Fallback to localhost
-            local_ip = "127.0.0.1"
-        finally:
-            s.close()
+        interfaces = psutil.net_if_addrs()
 
-        # Always use /24 prefix as more reliable option
-        # The detection logic was failing; using fixed prefix as requested
-        prefix_length = 24
+        if self.interface:
+            iface_addrs = interfaces.get(self.interface)
+            if not iface_addrs:
+                raise ValueError(
+                    f"Interface '{self.interface}' not found or has no addresses."
+                )
 
-        # Create network address
-        network_obj = ipaddress.IPv4Network(f"{local_ip}/{prefix_length}", strict=False)
-        network_address = str(network_obj.network_address)
+            addrs_to_check = [(self.interface, iface_addrs)]
+        else:
+            # Search all interfaces
+            addrs_to_check = interfaces.items()
 
-        logger.debug(
-            f"Network info: local_ip={local_ip}, network={network_address}/{prefix_length}"
+        for iface_name, iface_addrs in addrs_to_check:
+            for addr in iface_addrs:
+                if addr.family == socket.AF_INET and not addr.address.startswith(
+                    "127."
+                ):
+                    local_ip = addr.address
+                    netmask = addr.netmask
+                    if netmask:
+                        prefix_length = ipaddress.IPv4Network(
+                            f"0.0.0.0/{netmask}"
+                        ).prefixlen
+                    else:
+                        prefix_length = 24  # fallback
+                    network_obj = ipaddress.IPv4Network(
+                        f"{local_ip}/{prefix_length}", strict=False
+                    )
+                    network_address = str(network_obj.network_address)
+
+                    logger.debug(
+                        f"Network info: interface={iface_name}, local_ip={local_ip}, "
+                        f"network={network_address}/{prefix_length}"
+                    )
+                    return local_ip, network_address, prefix_length
+
+        logger.warning(
+            "No suitable network interface found. Falling back to 127.0.0.1/24."
         )
-        return local_ip, network_address, prefix_length
+        return "127.0.0.1", "127.0.0.0", 24
 
     def _subnet_mask_to_cidr(self, subnet_mask: str) -> int:
         """Convert subnet mask (e.g., 255.255.255.0) to CIDR prefix length."""
@@ -186,6 +239,9 @@ class NetworkScanner:
     def _scan_host(self, ip: str, tries: int = 1) -> Optional[NetworkDevice]:
         """Scan a single host for the target port."""
         for attempt in range(tries):
+            if self._stop_event.is_set():
+                logger.info("Scan stopped by user.")
+                return None
             try:
                 # First do a quick check if the port is open
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -236,6 +292,7 @@ class NetworkScanner:
         Returns:
             List of NetworkDevice objects for devices with target port open
         """
+        self._stop_event.clear()
         _, network_address, prefix_length = self.get_network_info()
 
         self.n_discovered_devices = 0
@@ -271,6 +328,9 @@ class NetworkScanner:
             completed_count = 0
 
             for i, future in enumerate(concurrent.futures.as_completed(future_to_ip)):
+                if self._stop_event.is_set():
+                    logger.info("Scan stopped by user.")
+                    break
                 ip = future_to_ip[future]
                 try:
                     device = future.result()
