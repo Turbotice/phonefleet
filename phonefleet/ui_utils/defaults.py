@@ -1,0 +1,3 @@
+DEFAULT_INVENTORY_FILE = "data/default_inventory.csv"
+MAX_PLOT_POINTS = 10_000
+OFFSET_SCALE = 1_000_000_000
