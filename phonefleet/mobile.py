@@ -21,10 +21,12 @@ def get_os():
 def get_folder():
     ostype = platform.platform().split('-')[0]
     osname = socket.gethostname()
+    print(ostype)
     if osname=='localhost':
         folder = '/storage/emulated/0/Documents/'
     elif ostype=='macOS':
-        folder = 'Phonefleet/'
+        #folder = '/Volumes/Fabien_2024/Dub25/FP4/IMU_Data/'#'Phonefleet/'
+        folder = '/Volumes/Fabien_2024/Motor_Control/Tests/'#'Phonefleet/'
     elif ostype=='linux':
         folder= 'Phonefleet/'
     else:
@@ -64,7 +66,14 @@ def get_filelist(network,phonelist,s,display=True):
 def get_file(network,phonelist,s):
     try:
         phone = int(s.split(' ')[1])
-        num = int(s.split(' ')[2])
+        filelist = s.split(' ')[2]
+        if ':' in filelist:
+            imin = int(filelist.split(':')[0])
+            imax = int(filelist.split(':')[1])
+            multiple = True
+        else:
+            num = int(s.split(' ')[2])
+            multiple = False
     except:
         print('argument not valid, specify phone and file number,')
         print('exemple : pull 5 16')
@@ -73,17 +82,25 @@ def get_file(network,phonelist,s):
     filelist = get_filelist(network,phonelist,s)
     if len(filelist)==0:
         return None
-    if num<len(filelist):
-        filename = filelist[num]
-
-        ip = connect.get_adress(phone,network=network)
-        a = gob.get_file(ip,filename)
-        data = a.decode('utf-8')
-        
-        save_file(filename,data,phone)
+    if not multiple:
+        if num<len(filelist):
+            filename = filelist[num]
+            ip = connect.get_adress(phone,network=network)
+            a = gob.get_file(ip,filename)
+            data = a.decode('utf-8')
+            
+            save_file(filename,data,phone)
+        else:
+            print(f'Num {num} greater than the number of files')
+            return None
     else:
-        print(f'Num {num} greater than the number of files')
-        return None
+        for num in range(imin,imax):
+            filename = filelist[num]
+            ip = connect.get_adress(phone,network=network)
+            a = gob.get_file(ip,filename)
+            data = a.decode('utf-8')
+            save_file(filename,data,phone)
+
 
 def save_file(filename,data,phone):
     name = os.path.basename(filename)
@@ -118,6 +135,12 @@ def start_phonelist(network,phonelist):
         print(status)
         gob.individual_start(ip)
 
+def usb_cmd(network,phonelist,s):
+    cmd = s.split(' ')[1]
+    for phone in phonelist:
+        ip = connect.get_adress(phone,network=network)
+        gob.usb_cmd(ip,cmd)
+    
 def time_sync(network,phonelist,iter=5):
     savefolder = get_folder()+'Gobannos_Tsync/'
     if not os.path.exists(savefolder):
@@ -195,6 +218,8 @@ def choose(network,phonelist):
         get_filelist(network,phonelist,s)
     elif s[:4]=='pull':
         data = get_file(network,phonelist,s)
+    elif s[:3]=='usb':
+        usb_cmd(network,phonelist,s)
     elif s=='exit':
         print("exit")
     else:
@@ -208,7 +233,7 @@ def defaults():
         phonelist = [1,2,3,4,5]
         network = 47
     elif ostype=='macOS':
-        phonelist = [5]
+        phonelist = [101]
         network = 2
     else:
         phonelist = [8]
