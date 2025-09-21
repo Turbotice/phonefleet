@@ -79,6 +79,11 @@ def get_file(ip,filename):
     #dic = read_data(data,name)
     return a
 
+def usb_cmd(ip,cmd):
+    try:
+        a = urllib.request.urlopen(f"http://{ip}:{port}/usb-cmd/{cmd}").read()
+    except:
+        print(f"Not able to send usb instruction to {ip}")
 
 def individual_stop(ip):
     a = urllib.request.urlopen(f"http://{ip}:{port}"+commands['stop']).read()
