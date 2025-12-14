@@ -3,7 +3,7 @@ import os
 import numpy as np
 import time
 import datetime 
-import phonefleet.load as load
+import load as load
 
 from pprint import pprint
 
@@ -19,7 +19,7 @@ ostype = ostype.split('-')[0]
 if ostype=='macOS':
     path = 'Test_data_FP3/'
     path_android = 'Test_data_FP3/'
-elif ostype=='linux':
+elif ostype=='Linux':
     path = 'datatest/'
     path_android = '/storage/self/primary/Download/Gobannos/'
 else:

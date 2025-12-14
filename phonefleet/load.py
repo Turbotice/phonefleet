@@ -133,10 +133,13 @@ def sync_time(data,tsync=None):
         #retrieve start time from folder name
         # use first filename as reference (accelerometer ?)
         fileref = data['filename'][0]
-        if 'accelerometer' in fileref:
-            t0 = data['ta'][0]           
+        if 'accelerometer' in fileref and len(data['ta'])>0:
+            t0 = data['ta'][0]
+        elif 'gyroscope' in fileref and len(data['tg'])>0:
+            t0 = data['tg'][0]
         else:
-            print('check data, accelerometer data may be missing')
+            t0 = 0
+            print('check data, a&g files are empty')
         if '_D20' in fileref:
             s = '20'+fileref.split('_D20')[-1]
         elif '/20' in fileref:
@@ -170,6 +173,9 @@ def stat(data,date=False):
     print('')
     print('date : '+dispdate(data[keyref][0])+', time : '+disptime(data[keyref][0],date=False)+ '(UTC)')
     for key,var in zip(keys,variables):
+        if len(data[key])==0:
+            print(f'Variable {key} is empty')
+            continue
         tmin = data[key][0]
         tmax = data[key][-1]
         n = len(data[key])
