@@ -19,7 +19,7 @@ def get_number(folder):
     else:
         return int(s)
     
-def get_pĥonelist(folder):
+def get_phonelist(folder):
     folderlist = get_folderlist(folder)
     phonelist = [get_number(f) for f in folders]
     return list(set(phonelist))
@@ -60,7 +60,7 @@ def extract_var(filename):
 def load_files(datafiles,header_only=False):
     datas={}
     for filename in datafiles:
-        print(filename)
+        #print(filename)
         if header_only:
             max_rows=1
         else:
@@ -79,7 +79,7 @@ def update_datafile(datas,data):
         else:
             if key in exclude:#don't duplicate coords key
                 continue
-            print(key)
+            #print(key)
             datas[key] = np.asarray(list(datas[key])+list(data[key]))#concatenate both dataset
     return datas
 
@@ -168,7 +168,7 @@ def stat(data,date=False):
     keys,variables = get_times(data)
     keyref = keys[0]
     print('')
-    print('date : '+dispdate(data[keyref][0]))
+    print('date : '+dispdate(data[keyref][0])+', time : '+disptime(data[keyref][0],date=False)+ '(UTC)')
     for key,var in zip(keys,variables):
         tmin = data[key][0]
         tmax = data[key][-1]
