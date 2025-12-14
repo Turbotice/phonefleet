@@ -26,7 +26,10 @@ def get_folder():
         folder = '/storage/emulated/0/Documents/'
     elif ostype=='macOS':
         #folder = '/Volumes/Fabien_2024/Dub25/FP4/IMU_Data/'#'Phonefleet/'
-        folder = '/Volumes/Fabien_2024/Motor_Control/Tests/'#'Phonefleet/'
+        folder = '/Volumes/labshared2/Projet_E/Data/2025_1023/'
+        folder = '/Users/stephane/Documents/git/phonefleet/phonefleet/Phonefleet/'
+
+        #folder = '/Volumes/Fabien_2024/Motor_Control/Tests/'#'Phonefleet/'
     elif ostype=='linux':
         folder= 'Phonefleet/'
     else:
@@ -233,8 +236,8 @@ def defaults():
         phonelist = [1,2,3,4,5]
         network = 47
     elif ostype=='macOS':
-        phonelist = [101]
-        network = 2
+        phonelist = [119]
+        network = 223
     else:
         phonelist = [8]
         network = 1
