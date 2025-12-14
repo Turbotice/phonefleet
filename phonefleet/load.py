@@ -140,11 +140,19 @@ def sync_time(data,tsync=None):
     if tsync is None:
         #retrieve start time from folder name
         # use first filename as reference (accelerometer ?)
-        fileref = data['filename'][0]
-        if 'accelerometer' in fileref:
+        keys,variables = get_times(data)
+        print(variables)
+        if 'a' in variables:
             t0 = data['ta'][0]           
+        elif 'g' in variables:
+            t0 = data['tg'][0]           
+        elif len(variables)>0 and len(data['t'+variables[0]])>0:
+            var = variables[0]
+            t0 = data['t'+var][0]
         else:
-            print('check data, accelerometer data may be missing')
+            t0=0
+            print('No time stamps available, crappy data')
+            
         if '_D20' in fileref:
             s = '20'+fileref.split('_D20')[-1]
         elif '/20' in fileref:
