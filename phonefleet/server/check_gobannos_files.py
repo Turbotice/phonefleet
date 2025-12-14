@@ -4,9 +4,10 @@ import os
 import glob
 import numpy as np
 from pprint import pprint
+import phonefleet.tests as tests
 
 global path
-path = '../storage/downloads/Gobannos/' #check the path, depends from where the code is run
+path = '/storage/self/primary/Download/Gobannos/' #check the path, depends from where the code is run
 
 def list_recent_files(Dt=3600):#last 1h
 	filelist = glob.glob(path+'*.csv')
@@ -35,14 +36,14 @@ def last_modified(filelist):
 
 def display_stat(stats):
 	for stat in stats:
-                print('')
 		for key in ['filename','tm','size']:
 			print(key,stat[key])
 
 def test_last_data():
-        filelist = list_recent_files(Dt=3600)
-        stats = last_modified(filelist)
-        display_stat(stats)
-        
+	filelist = list_recent_files(Dt=3600)
+	stats = last_modified(filelist)
+	display_stat(stats)
+
 if __name__=='__main__':
-        test_last_data()
+	tests.parse_files()
+#	test_last_data()
