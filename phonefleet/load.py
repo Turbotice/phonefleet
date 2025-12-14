@@ -137,7 +137,12 @@ def sync_time(data,tsync=None):
             t0 = data['ta'][0]           
         else:
             print('check data, accelerometer data may be missing')
-        s = '20'+fileref.split('_D20')[1]
+        if '_D20' in fileref:
+            s = '20'+fileref.split('_D20')[-1]
+        elif '/20' in fileref:
+            s = '20'+fileref.split('/20')[-1]
+        else:
+            print('The file format is not recognized, unable to extract date')
         strtime = '-'.join(s.split('-')[:3])#extract only the time stamp
         utc_time = time.strptime(strtime, "%Y-%m-%dT%H_%M_%S") #convert to utc time. 
         t1 = time.mktime(utc_time)
