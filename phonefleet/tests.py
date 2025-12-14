@@ -3,7 +3,7 @@ import os
 import numpy as np
 import time
 import datetime 
-import load as load
+import phonefleet.load as load
 
 from pprint import pprint
 
@@ -19,7 +19,7 @@ ostype = ostype.split('-')[0]
 if ostype=='macOS':
     path = 'Test_data_FP3/'
     path_android = 'Test_data_FP3/'
-elif ostype=='Linux':
+elif ostype=='linux':
     path = 'datatest/'
     path_android = '/storage/self/primary/Download/Gobannos/'
 else:
@@ -49,8 +49,11 @@ def parse_files(date=None):
 
     for exp in experiments.keys():
         data = load.load_files(experiments[exp],header_only=False)
-        data = load.sync_time(data)
-        load.stat(data)
+        if data is not None:
+            data = load.sync_time(data)
+            load.stat(data)
+        else:
+            print(f'{exp} is empty, no data available')
     #parse  per start time
 
 def get_start_time(filename):

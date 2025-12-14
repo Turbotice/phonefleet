@@ -68,7 +68,10 @@ def load_files(datafiles,header_only=False):
         data = load_gobfile(filename,max_rows=max_rows)
         if data is not None:
             datas = update_datafile(datas,data)
-    return datas
+    if datas=={}:
+        return None
+    else:
+        return datas
 
 def update_datafile(datas,data):
     #data1 : dictionnary containing data. Typical keys : ta, ax, gy, mz, tgps, gpslat, ...
