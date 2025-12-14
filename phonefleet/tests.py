@@ -19,7 +19,7 @@ ostype = ostype.split('-')[0]
 if ostype=='macOS':
     path = 'Test_data_FP3/'
     path_android = 'Test_data_FP3/'
-elif ostype=='linux':
+elif ostype=='Linux':
     path = 'datatest/'
     path_android = '/storage/self/primary/Download/Gobannos/'
 else:
