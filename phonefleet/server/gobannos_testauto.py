@@ -47,6 +47,7 @@ def start():
 	url = f"http://{ip}:{port}"
 
 	a = urllib.request.urlopen(f"{url}/status").read()
+	time.sleep(0.1)
 	if a==b'STOPPED':
 		a = urllib.request.urlopen(f"{url}/start").read()
 		pass
@@ -87,7 +88,7 @@ def test_program():
 	for t in tlist:
 		print(f"Test duration : {t}s")
 		stats = test_active(t=t)
-		#print(display_stat(stats))
+		print(display_stat(stats))
 		print('')
 
 test_program()
