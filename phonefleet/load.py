@@ -66,7 +66,8 @@ def load_files(datafiles,header_only=False):
         else:
             max_rows=None
         data = load_gobfile(filename,max_rows=max_rows)
-        datas = update_datafile(datas,data)
+        if data is not None:
+            datas = update_datafile(datas,data)
     return datas
 
 def update_datafile(datas,data):
@@ -83,47 +84,54 @@ def update_datafile(datas,data):
             datas[key] = np.asarray(list(datas[key])+list(data[key]))#concatenate both dataset
     return datas
 
+def check_content(raw):
+    if np.sum(np.isnan(raw))>0:
+        i0 = np.where(np.isnan(raw)[:,1])[0][0]
+    elif np.sum(raw[:,0]<0)>0:
+        print('negative time detected, cutting')
+        i0 = np.where(raw[:,0]<0)[0][0]
+    else:
+        i0 = len(raw[:,0])
+    return i0>0,i0
+
 def load_gobfile(datafile,max_rows=None):
+    var = extract_var(datafile)
     data = {}
     data['filename']=[datafile]
-    var = extract_var(datafile)
 
     if var=='gps':
         raw = np.loadtxt(datafile,usecols=(0,1,2,3),delimiter=',',skiprows=0,max_rows=max_rows)#
-        if np.sum(np.isnan(raw))>0:
-            i0 = np.where(np.isnan(raw)[:,1])[0][0]
-        else:
-            i0 = len(raw[:,0])
-        if i0>0:
+        valid,i0 = check_content(raw)
+        if valid:
             data['t'+var]=raw[:i0,0]
             data[var+'lat']=raw[:i0,1]
             data[var+'lon']=raw[:i0,2]
             data[var+'elev']=raw[:i0,3] # is it useful ? keep it
         else:
-            print('gps data empty')
-        return data
-    
+            print('gps data empty, ignoring file')    
+            return None
     elif var=='u':
         raw = np.loadtxt(datafile,usecols=(0,1),delimiter=',',skiprows=0,max_rows=max_rows)#
-        if np.sum(np.isnan(raw))>0:
-            i0 = np.where(np.isnan(raw)[:,1])[0][0]
-        elif np.sum(raw[:,0]<0)>0:
-            print('negative time detected in usb file, cutting')
-            i0 = np.where(raw[:,0]<0)[0][0]
+        valid,i0 = check_content(raw)
+        if valid:
+            data = {}
+            data['filename']=[datafile]
+            data['t'+var]=raw[:i0,0]
+            data[var+'_raw']=raw[:i0,1]
         else:
-            i0 = len(raw[:,0])
-        data['t'+var]=raw[:i0,0]
-        data[var+'_raw']=raw[:i0,1]
+            print('USB data empty or non valid, ignoring file')
+            return None
     else:
-        data['coords']=['x','y','z']
         raw = np.loadtxt(datafile,usecols=(0,1,2,3),delimiter=',',skiprows=0,max_rows=max_rows)#
-        if np.sum(np.isnan(raw))>0:
-            i0 = np.where(np.isnan(raw)[:,1])[0][0]
+        valid,i0 = check_content(raw)
+        if valid:
+            data['coords']=['x','y','z']
+            data['t'+var]=raw[:i0,0]
+            for i,c in enumerate(data['coords']):
+                data[var+c]=raw[:i0,i+1]
         else:
-            i0 = len(raw[:,0])
-        data['t'+var]=raw[:i0,0]
-        for i,c in enumerate(data['coords']):
-            data[var+c]=raw[:i0,i+1]
+            print(f'{var} data empty or non valid, ignoring file')
+            return None
     return data
 
 def sync_time(data,tsync=None):
@@ -133,13 +141,10 @@ def sync_time(data,tsync=None):
         #retrieve start time from folder name
         # use first filename as reference (accelerometer ?)
         fileref = data['filename'][0]
-        if 'accelerometer' in fileref and len(data['ta'])>0:
-            t0 = data['ta'][0]
-        elif 'gyroscope' in fileref and len(data['tg'])>0:
-            t0 = data['tg'][0]
+        if 'accelerometer' in fileref:
+            t0 = data['ta'][0]           
         else:
-            t0 = 0
-            print('check data, a&g files are empty')
+            print('check data, accelerometer data may be missing')
         if '_D20' in fileref:
             s = '20'+fileref.split('_D20')[-1]
         elif '/20' in fileref:
@@ -173,9 +178,6 @@ def stat(data,date=False):
     print('')
     print('date : '+dispdate(data[keyref][0])+', time : '+disptime(data[keyref][0],date=False)+ '(UTC)')
     for key,var in zip(keys,variables):
-        if len(data[key])==0:
-            print(f'Variable {key} is empty')
-            continue
         tmin = data[key][0]
         tmax = data[key][-1]
         n = len(data[key])
