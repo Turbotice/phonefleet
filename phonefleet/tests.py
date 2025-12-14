@@ -3,7 +3,7 @@ import os
 import numpy as np
 import time
 import datetime 
-import phonefleet.load as load
+import load as load
 
 from pprint import pprint
 
