@@ -152,7 +152,7 @@ def sync_time(data,tsync=None):
         else:
             t0=0
             print('No time stamps available, crappy data')
-            
+        fileref = data['filename'][0]
         if '_D20' in fileref:
             s = '20'+fileref.split('_D20')[-1]
         elif '/20' in fileref:
