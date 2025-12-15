@@ -7,12 +7,30 @@ from pprint import pprint
 
 global path
 path = '../storage/downloads/Gobannos/' #check the path, depends from where the code is run
+path = '/storage/self/primary/Download/Gobannos/'
+global network
+global phone
+global port
+port = 8080
+
+import subprocess
+
+def get_ip(protocol='wlan'):
+	out = subprocess.run('ifconfig',capture_output=True)
+	ip = out.stdout.decode().split(protocol)[1].split('inet ')[1].split(' netmask')[0]
+	print(ip)
+	numbers = ip.split('.')
+	network = int(numbers[2])
+	phone = int(numbers[3])
+	return network,phone
+network,phone = get_ip()
+print(network,phone)
 
 def list_recent_files(Dt=3600):#last 1h
 	filelist = glob.glob(path+'*.csv')
 	print(f"Total number of files : ~{len(filelist)}")
 	tnow = time.time()
-	
+
 	recentfiles = [filename for filename in filelist if (tnow-os.path.getmtime(filename))<Dt]
 	print(f"Total number of recent files : ~{len(recentfiles)}")
 	return recentfiles
@@ -40,9 +58,6 @@ def display_stat(stats):
 			print(key,stat[key])
 
 def start():
-	network = 223
-	phone = 197
-	port = 8080
 	ip = f"192.168.{network}.{phone}"
 	url = f"http://{ip}:{port}"
 
@@ -60,9 +75,6 @@ def start():
 	print(s+", "+a.decode())
 
 def stop():
-	network = 223
-	phone = 197
-	port = 8080
 	ip = f"192.168.{network}.{phone}"
 	url = f"http://{ip}:{port}"
 
@@ -77,9 +89,9 @@ def test_active(t=10):
 	time.sleep(t)
 	stop()
 	time.sleep(1)
-	#filelist = list_recent_files()
-	#stats = last_modified(filelist)
-	#return stats
+	filelist = list_recent_files()
+	stats = last_modified(filelist)
+	return stats
 
 def test_program():
 	stop()
@@ -92,4 +104,3 @@ def test_program():
 		print('')
 
 test_program()
-
