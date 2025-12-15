@@ -1,6 +1,9 @@
 Install F-Droid
 From there install termux and termux:API
 > Mandatory to have access to the files !!
+other related:
+pkg termux-api
+pg install cronie
 
 Connect to the Phone : 
 in the phone, open Termux,
