@@ -236,8 +236,8 @@ def defaults():
         phonelist = [1,2,3,4,5]
         network = 47
     elif ostype=='macOS':
-        phonelist = [119]
-        network = 223
+        phonelist = [0]
+        network = 2
     else:
         phonelist = [8]
         network = 1
