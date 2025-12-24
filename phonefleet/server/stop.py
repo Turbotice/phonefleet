@@ -5,7 +5,7 @@ import phonefleet.server.connect as connect
 
 
 def main():
-        network,phone = connect.get_ip()
+	network,phone = connect.get_ip()
 	port = 8080
 	ip = f"192.168.{network}.{phone}"
 	url = f"http://{ip}:{port}"
