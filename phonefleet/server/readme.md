@@ -38,6 +38,10 @@ pkg install termux-api
 pkg install termux-am-socket
 pkg install python
 
+In python
+python -m pip install numpy
+
+
 
 maintain ssh open whatever:
 https://samutz.com/docs/books/tech/page/setting-up-ssh-on-termux
@@ -67,3 +71,19 @@ Crontab
 pkg install cronie termux-services
 sv-enable crond
 crontab -e
+
+
+Make a phone as a server
+Unlock adb commands :
+authorise ADB over Wifi
+Identify the port (random value, probably change over time)
+execute :
+adp pair ip_adress:port_pairing
+Then, give the id displayed on the phone
+execute :
+adb connect ip_adress:port_toconnect
+Beware, the port number is different !
+an adb device has been created, you can run classical adb command, for instance
+adb shell input keyevent 26 : unlock the screen
+adb shell input keyevent 82 : unlock the screen
+
