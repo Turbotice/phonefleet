@@ -1,0 +1,6 @@
+* * * * * mkdir ~/log
+* * * * * date >> ~/log/log_battery.txt
+* * * * * termux-battery-status >> ~/log/log_battery.txt
+4 * * * * adb shell input keyevent 82
+5 * * * * python ~/git/phonefleet/phonefleet/server/autorun.py >> ~/log/log_gobannos.txt
+11 * * * * adb shell input keyevent 26
