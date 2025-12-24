@@ -1,8 +1,11 @@
 import urllib.request
 import time
+
+import phonefleet.server.connect as connect
+
+
 def main():
-	network = 223
-	phone = 197
+        network,phone = connect.get_ip()
 	port = 8080
 	ip = f"192.168.{network}.{phone}"
 	url = f"http://{ip}:{port}"
@@ -11,4 +14,6 @@ def main():
 	time.sleep(0.1)
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
-main()
+
+if __name__=='__main__':
+        main()
