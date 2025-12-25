@@ -91,9 +91,9 @@ To move to a known port, you can run :
 adb tcpip 5555
 To show the device list, type
 adb devices
-Then, you will have two devices in the list.
+Then, you should have two devices in the list.
 You can run 
 adb kill-server
-then to restart
+And restart adb by running :
 adb devices
-You should have exactly one device in the list now, which will be used by the crontab to unlock the screen before running Gobannos (check on the FP4)
+You should now have exactly one device in the list, which will be used by the crontab to unlock the screen before running Gobannos (work on both FP3 & FP4)
