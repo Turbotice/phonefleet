@@ -5,11 +5,8 @@ import time
 import phonefleet.server.connect as connect
 
 def main():
-	network,phone = connect.get_ip()
-	port = 8080
-	ip = f"192.168.{network}.{phone}"
-	ip = "127.0.0.1"
-
+	ip = connect.get_ip(protocol='self')
+	port = 8080	
 	print(ip)
 	url = f"http://{ip}:{port}"
 	a = urllib.request.urlopen(f"{url}/status").read()
