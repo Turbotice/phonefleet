@@ -8,11 +8,7 @@ def catch_output(out):
 def get_apps_running():
     #names :
     dic = {}
-    names = { \\
-        ,'gobannos':'fr.pmmh.gobannos' \\
-        ,'termux':'com.termux' \\
-        ,'zerotier':'com.zerotier.one'\\
-        ,'teamviewer':'com.teamviewer.quicksupport.addon.universal'}
+    names =     {'gobannos':'fr.pmmh.gobannos','termux':'com.termux','zerotier':'com.zerotier.one', 'teamviewer':'com.teamviewer.quicksupport.addon.universal'}
     for name in names.keys():
         dic.update(is_app_running(name,names[name]))
     return dic
