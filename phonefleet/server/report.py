@@ -51,7 +51,7 @@ def short_report():
         #sort the report to keep only some keys
 
 def mail_report(filename,email='stephane.perrard@espci.fr'):
-        out = subprocess.run(['cat',filename,'|','msmtp','--debug',email],capture_output=True)
+        out = subprocess.run(['cat',filename,'|','msmtp',email],capture_output=True)
         print(out.stdout.decode())
         
 def main():
