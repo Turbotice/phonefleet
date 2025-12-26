@@ -31,8 +31,9 @@ def full_report():
 
         report['apps'] = termux.get_apps_running()
 
-        report['gobannos'] = status.get()        
-
+        # test Gobannos connexion, only works if screen is on
+        #report['gobannos'] = status.get()
+        
         print('Subject: Activity Report FP3 \n')
         pprint(report)
 
