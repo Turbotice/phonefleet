@@ -40,6 +40,7 @@ pkg install nmap
 pkg install termux-api
 pkg install termux-am-socket
 pkg install termux-tools
+pkg install root-repo
 
 install python & useful packages
 https://github.com/termux/termux-packages/discussions/19126
