@@ -1,0 +1,16 @@
+defaults
+auth           on
+tls            on
+tls_trust_file /data/data/com.termux/files/usr/etc/tls/cert.pem
+tls_certcheck  on
+tls_starttls   off
+logfile        ~/.msmtp.log
+
+account        SP_ESPCI
+host           mailer.espci.fr
+port           465
+from           stephane.perrard@espci.fr
+user           sperrard
+password       *********
+
+account default : SP_ESPCI

@@ -20,7 +20,8 @@ password : usual
 specify the port (8022)
 
 ——— Keep Termux running in the background ———
-type termux-wake-lock to keep running termux in the background
+to keep running termux in the background, type 
+termux-wake-lock 
 Add an automatic script in the boot :
 nano ~/.bashrc
 sshd
@@ -28,7 +29,7 @@ termux-wake-lock
 
 maintain ssh open whatever:
 https://samutz.com/docs/books/tech/page/setting-up-ssh-on-termux
-If need to reinstall Termux, you may need this command :
+If need to reinstall Termux, you may need this command to reboot keys :
 ssh-keygen -R [192.168.223.219]:8022
 
 
@@ -38,6 +39,7 @@ pkg install android-tools
 pkg install nmap
 pkg install termux-api
 pkg install termux-am-socket
+pkg install termux-tools
 
 install python & useful packages
 https://github.com/termux/termux-packages/discussions/19126
@@ -70,12 +72,13 @@ crontab -e
 
 
 ———— Use the phone as a distant server ———
-Following steps open an adb channel on the phone, to manipulate screen state, to be tested on a long term distant access
-Use the wifi connection, unclear it would work through internet
+The following steps open an adb channel on the phone to manipulate screen state.
+The method still need to be tested on a long term distant access
+Use the wifi connection, unclear it would work through internet -> yes if the phone is properly set up first
 
 
 Unlock adb commands :
-authorise ADB over Wifi
+in Parameter/developer options, authorise ADB over Wifi
 Identify the port (random value, probably change over time)
 execute :
 adp pair ip_adress:port_pairing
@@ -97,3 +100,13 @@ adb kill-server
 And restart adb by running :
 adb devices
 You should now have exactly one device in the list, which will be used by the crontab to unlock the screen before running Gobannos (work on both FP3 & FP4)
+
+_______ set up a mail sender on the phone ————
+
+Follow :
+https://www.reddit.com/r/termux/comments/1mt3xi1/sending_email_from_termux_via_cli/
+
+And adapt it to ESPCI server
+see
+
+cat report_2026_12_26_FP3.txt | msmtp --debug antonin.eddi@espci.fr jishen.zhang@espci.fr stephane.perrard@espci.fr
