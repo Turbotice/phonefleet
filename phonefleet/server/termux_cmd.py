@@ -22,8 +22,8 @@ def get_adb_status():
     dic = {}
     if len(results)==1:
         print('only adb interface connected')
-        dic{'name'} = results[0].split('\t')[0]
-        dic{'status'} = results[0].split('\t')[1]
+        dic['name'] = results[0].split('\t')[0]
+        dic['status'] = results[0].split('\t')[1]
         return dic
     else:
         print(f'Number of devices connected : {len(results)}')
