@@ -17,24 +17,31 @@ from pprint import pprint
 #Gobannos running
 #last saved Gobannos filename (with size)
 
-def full_report():
+def full_report(mail=True):
         report = {}
-        report['time'] = termux.get_time()
 
-        report['battery'] = termux.get_battery()
+        #following steps required that termux running
+        try:
+                report['time'] = termux.get_time()
+                report['battery'] = termux.get_battery()
+                report['id'] = termux.get_whoami()
+                report['network'] = termux.get_all_ips()
+        except:
+                print('Failed to execute basic Termux command. Check that termux is running')
 
-        report['id'] = termux.get_whoami()
-
-        report['network'] = termux.get_all_ips()
-
-        report['adb'] = termux.get_adb_status()
-
-        report['apps'] = termux.get_apps_running()
-
+        #following steps required adb, may fall off
+        try:
+                report['adb'] = termux.get_adb_status()
+                report['apps'] = termux.get_apps_running()
+        except:
+                print('adb link may be broken, check that adb is running and device is connected')
+                
         # test Gobannos connexion, only works if screen is on
         #report['gobannos'] = status.get()
-        
-        print('Subject: Activity Report FP3 \n')
+
+        if mail:
+                print('Subject: Activity Report FP3 \n')
+                print(report['time']['date']+'\n')
         pprint(report)
 
         return report
@@ -42,7 +49,10 @@ def full_report():
 def short_report():
         report = full_report()
         #sort the report to keep only some keys
-        
+
+def mail_report(filename,email='stephane.perrard@espci.fr'):
+        out = subprocess.run(['cat',filename,'|','msmtp','--debug',email],capture_output=True)
+        print(out.stdout.decode())
         
 def main():
 	out = full_report()
