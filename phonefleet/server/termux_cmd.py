@@ -46,7 +46,10 @@ def parse_battery_output(lines):
             try:
                 outs[key]=float(out)
             except:
-                outs[key]=str(out.split('"')[1])
+                try:
+                    outs[key]=str(out.split('"')[1])
+                except:
+                    outs[key]=out
         print(key,outs[key])
     return outs
 
@@ -63,5 +66,5 @@ def get_all_ips():
                         res[p]=ip
                 return res
         else:
-                print('parsing of ifconfig non valid, abort)
+                print('parsing of ifconfig non valid, abort')
                 return None
