@@ -27,6 +27,8 @@ def full_report():
 
         report['adb'] = termux.get_adb_status()
 
+        report['apps'] = termux.get_apps_running()
+
         print('Subject: Activity Report FP3 \n')
         pprint(report)
 

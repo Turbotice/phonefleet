@@ -5,6 +5,30 @@ def catch_output(out):
     lines = out.stdout.decode().split('\n')
     return lines
 
+def get_apps_running():
+    #names :
+    dic = {}
+    names = { \\
+        ,'gobannos':'fr.pmmh.gobannos' \\
+        ,'termux':'com.termux' \\
+        ,'zerotier':'com.zerotier.one'\\
+        ,'teamviewer':'com.teamviewer.quicksupport.addon.universal'}
+    for name in names.keys():
+        dic.update(is_app_running(name,names[name]))
+    return dic
+
+def is_app_running(name,name_id):
+    dic = {}
+    out = subprocess.run(['adb','shell','pidof',name_id],capture_output=True)
+    lines = out.stdout.decode().split('\n')
+    #if an id exist, app is running
+    if len(lines)>1:
+        dic[name]=True
+    else:
+        dic[name]=False
+    return dic
+        
+        
 def get_time():
     out = subprocess.run('date',capture_output=True)
     lines = catch_output(out)
