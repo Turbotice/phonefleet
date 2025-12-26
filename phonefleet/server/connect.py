@@ -1,8 +1,23 @@
 import subprocess
-
+from pprint import pprint
 global port
 port = 8080
 
+def get_all_ips():
+        out = subprocess.run('ifconfig',capture_output=True)
+        lines = out.stdout.decode().split('\n')
+        protocols = [line.split(':')[0] for line in lines if ':' in line]
+        ips= [line.split('inet ')[1].split(' netmask')[0] for line in lines if 'inet ' in line]
+
+        if len(ips)==len(protocols):
+                res = {}
+                for p,ip in zip(protocols,ips):
+                        res[p]=ip
+                return res
+        else:
+                print('parsing of ifconfig non valid, abort)
+                return None
+        
 def get_ip(protocol='wlan'):
         #possible protocols :
         # wlan : connection through the Wifi
