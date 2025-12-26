@@ -2,6 +2,8 @@ import urllib.request
 import time
 import subprocess
 import phonefleet.server.connect as connect
+import phonefleet.server.status as status
+
 import phonefleet.server.termux_cmd as termux
 
 from pprint import pprint
@@ -28,6 +30,8 @@ def full_report():
         report['adb'] = termux.get_adb_status()
 
         report['apps'] = termux.get_apps_running()
+
+        report['gobannos'] = status.get()        
 
         print('Subject: Activity Report FP3 \n')
         pprint(report)

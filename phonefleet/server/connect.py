@@ -2,7 +2,7 @@ import subprocess
 from pprint import pprint
 global port
 port = 8080
-
+        
 def get_all_ips():
         out = subprocess.run('ifconfig',capture_output=True)
         lines = out.stdout.decode().split('\n')
