@@ -21,7 +21,7 @@ def get_adb_status():
     results = lines[1:-2] #may depend on phone type ?? works on FP3
     dic = {}
     if len(results)==1:
-        print('only adb interface connected')
+        #print('Exactly one adb interface connected')
         dic['name'] = results[0].split('\t')[0]
         dic['status'] = results[0].split('\t')[1]
         return dic
@@ -50,7 +50,7 @@ def parse_battery_output(lines):
                     outs[key]=str(out.split('"')[1])
                 except:
                     outs[key]=out
-        print(key,outs[key])
+        #print(key,outs[key])
     return outs
 
     
