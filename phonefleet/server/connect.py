@@ -15,7 +15,7 @@ def get_all_ips():
                         res[p]=ip
                 return res
         else:
-                print('parsing of ifconfig non valid, abort)
+                print('parsing of ifconfig non valid, abort')
                 return None
         
 def get_ip(protocol='wlan'):

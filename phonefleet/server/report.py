@@ -3,7 +3,7 @@ import time
 import subprocess
 import phonefleet.server.connect as connect
 import phonefleet.server.termux_cmd as termux
-
+from pprint import pprint
 #write in a log file the following informations
 #time
 #battery level
