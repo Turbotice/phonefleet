@@ -3,7 +3,7 @@ import time
 import subprocess
 import phonefleet.server.connect as connect
 import phonefleet.server.termux_cmd as termux
-from pprint import pprint
+
 #write in a log file the following informations
 #time
 #battery level
@@ -16,15 +16,15 @@ from pprint import pprint
 
 def full_report():
         report = {}
-        report.update(termux.get_time())
+        report['time'] = termux.get_time()
 
-        report.update(termux.get_battery())
+        report['battery'] = termux.get_battery()
 
-        report.update(termux.get_whoami())
+        report['id'] = termux.get_whoami()
 
-        report.update(termux.get_all_ips())
+        report['network'] = termux.get_all_ips()
 
-        report.update(termux.get_adb_status())
+        report['adb'] = termux.get_adb_status()
 
         pprint(report)
 

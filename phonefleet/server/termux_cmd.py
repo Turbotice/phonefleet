@@ -21,13 +21,13 @@ def get_adb_status():
     results = lines[1:-2] #may depend on phone type ?? works on FP3
     dic = {}
     if len(results)==1:
-        print('only adb interface connected')
-        dic['adb_name'] = results[0].split('\t')[0]
-        dic['adb_status'] = results[0].split('\t')[1]
+        print('only adb interface connected'):
+        dic{'name'} = results[0].split('\t')[0]
+        dic{'status'} = results[0].split('\t')[1]
         return dic
-    else:
+    else
         print(f'Number of devices connected : {len(results)}')
-        print('Do nothing')
+        print('Not implemented, do nothing')
         return None
     
 def get_battery():
@@ -46,11 +46,7 @@ def parse_battery_output(lines):
             try:
                 outs[key]=float(out)
             except:
-                print(out)
-                try:
-                    outs[key]=str(out.split('"')[1])
-                except:
-                    outs[key]=out
+                outs[key]=str(out.split('"')[1])
         print(key,outs[key])
     return outs
 
@@ -67,5 +63,5 @@ def get_all_ips():
                         res[p]=ip
                 return res
         else:
-                print('parsing of ifconfig non valid, abort')
+                print('parsing of ifconfig non valid, abort)
                 return None
