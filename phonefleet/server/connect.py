@@ -18,7 +18,7 @@ def get_all_ips():
                 print('parsing of ifconfig non valid, abort')
                 return None
         
-def get_ip(protocol='wlan'):
+def get_ip(protocol='self'):
         #possible protocols :
         # wlan : connection through the Wifi
         # self : use internal ip adress, should be more robust
@@ -48,6 +48,14 @@ def get_local_ip(protocol='wlan'):
 	phone = int(numbers[3])
 	return network,phone
 
+
+def unlock():
+#process to self unlock the redmis
+    c=subprocess.run(['adb','shell','input','keyevent','KEYCODE_WAKEUP'],text=True,capture_output=True)
+    c=subprocess.run(['adb','shell','input','swipe','200','900','200','300'],text=True,capture_output=True)
+    c=subprocess.run(['adb','shell','input','text','01012000'],text=True,capture_output=True)
+    c=subprocess.run(['adb','shell','input','keyevent','66'],text=True,capture_output=True)
+    
 #network,phone = get_ip()
 
 
