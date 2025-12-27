@@ -9,17 +9,19 @@ def get_my_MAC(protocol='wlan0'):
         out = subprocess.run(['ip','link'],text=True,capture_output=True)
         lines = out.stdout.split('\n')
         output = [lines[i:i+2] for i,line in enumerate(lines) if protocol in line]
-        MAC = output.split(' ')[5]
+        MAC = output[0][1].split(' ')[5]
         return MAC
 
 def get_my_id():
         table = read_phone_table()#table with all the registered MAC Adresses
         MAC = get_my_MAC()
 
-        l = [key for key in table.keys() if table[key]['Adresse MAC']==MAC]                
+        l = [key for key in table.keys() if table[key]['Adresse MAC']==MAC]              
         if len(l)==1:
+                key = l[0]
                 print(f'Identifier : {key}')
         else:
+                key = None
                 print(f'Phone not found in the table, check that {MAC} is in the list')
         return key
         
