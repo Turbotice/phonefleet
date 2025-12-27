@@ -1,3 +1,4 @@
+
 import subprocess
 from pprint import pprint
 global port
@@ -6,7 +7,7 @@ import csv
 
 
 def get_my_MAC(protocol='wlan0'):
-        out = subprocess.run(['ip','link'],text=True,capture_output=True)
+        out = subprocess.run(['adb','shell','ip','link'],text=True,capture_output=True)
         lines = out.stdout.split('\n')
         output = [lines[i:i+2] for i,line in enumerate(lines) if protocol in line]
         MAC = output[0][1].split(' ')[5]
