@@ -5,22 +5,44 @@ port = 8080
 import csv
 
 
-def get_my_MAC():
-        table = read_phone_table()
+def get_my_MAC(protocol='wlan0'):
+        out = subprocess.run(['ip','link'],text=True,capture_output=True)
+        lines = out.stdout.split('\n')
+        output = [lines[i:i+2] for i,line in enumerate(lines) if protocol in line]
+        MAC = output.split(' ')[5]
+        return MAC
 
+def get_my_id():
+        table = read_phone_table()#table with all the registered MAC Adresses
+        MAC = get_my_MAC()
 
+        l = [key for key in table.keys() if table[key]['Adresse MAC']==MAC]                
+        if len(l)==1:
+                print(f'Identifier : {key}')
+        else:
+                print(f'Phone not found in the table, check that {MAC} is in the list')
+        return key
+        
 def read_phone_table():
         dic={}
-        with open('PhoneTable.csv', newline='') as csvfile:
-                spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
-                header = spamreader[0][1:]
-                for row in spamreader[1:]:#remove header
-                        key = row[0]
-                        dic[key]={}
-                        for (k,elem) in zip(header,row[1:]):
-                                dic[key][k] = elem
-                                print(', '.join(row))
-                        
+        rows = read_csv('PhoneTable.csv')
+        #header = rows[0][1:]
+        for row in rows[1:]:#remove header
+                key = row[0]
+                dic[key]={}
+                for (k,elem) in zip(header,row[1:]):
+                        dic[key][k] = elem
+        return dic
+
+def read_csv(filename,delimiter=';'):
+    rows = []
+    with open(filename,'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=delimiter, quotechar='|')
+        for row in spamreader:
+            rows.append(row)
+    return rows
+
+
 def get_all_ips():
         out = subprocess.run('ifconfig',capture_output=True)
         lines = out.stdout.decode().split('\n')
