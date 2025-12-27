@@ -1,7 +1,9 @@
- * * * * * mkdir ~/log
+* * * * * mkdir ~/log
 * * * * * date >> ~/log/log_battery.txt
 * * * * * termux-battery-status >> ~/log/log_battery.txt
 59 * * * * python ~/git/phonefleet/phonefleet/server/unlock.py
 0 * * * * python ~/git/phonefleet/phonefleet/server/autorun.py >> ~/log/log_gobannos.txt
 6 * * * * adb shell input keyevent 26
-7 * * * * python ~/git/phonefleet/phonefleet/server/report.py -mailit False
+7 * * * * python ~/git/phonefleet/phonefleet/server/report.py -mailit True
+14,29,44 * * * * python ~/git/phonefleet/phonefleet/server/unlock.py
+15,30,45 * * * * adb shell input keyevent 26
