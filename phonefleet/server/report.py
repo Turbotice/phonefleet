@@ -42,6 +42,7 @@ def full_report(header=True,test_gobannos=False):
                 report['battery'] = termux.get_battery()
                 report['id'] = termux.get_whoami()
                 report['network'] = termux.get_all_ips()
+                report['name'] = connect.get_my_id()
         except:
                 print('Failed to execute basic Termux command. Check that termux is running')
 
@@ -57,16 +58,20 @@ def full_report(header=True,test_gobannos=False):
                 report['gobannos'] = status.get()
 
         if header:
-                print('Subject: Activity Report FP3 \n')
-                print(report['time']['date']+'\n')
+                add_header(report)
         pprint(report)
 
         return report
 
-def add_header(report):
-        print('Subject: Activity Report FP3 \n')
-        print(report['time']['date']+'\n')
-        
+def add_header(report,file=None):
+        myid = connect.get_my_id()
+        if file==None:
+                print(f'Subject: Activity Report for {myid} \n')
+                print(report['time']['date']+'\n')
+        else:
+                print('Subject: Activity Report for {myid} \n',file=f)
+                print(report['time']['date']+'\n',file=f) # time key must exist in the report !
+
 def cat_report(report,header=True):
         if header:
                 add_header(report)     
@@ -74,8 +79,7 @@ def cat_report(report,header=True):
         
 def save_report(report,filename='report.txt'):
         with open(filename, "w") as f:
-                print('Subject: Activity Report FP3 \n',file=f)
-                print(report['time']['date']+'\n',file=f) # must exist in the file !
+                add_header(report,file=f)
                 pprint(report,stream=f)
 
 def short_report():
@@ -92,10 +96,11 @@ def mail_report(filename,email='stephane.perrard@espci.fr'):
                 
 def main(args):
 	report = full_report()
-	save_report(report,filename=args.filename)
-	if args.mailit:
-		mail_report(args.filename,email=args.email)
+        save_report(report,filename=args.filename)
+	
+        if args.mailit:
+                mail_report(args.filename,email=args.email)
 
 if __name__=='__main__':
-	args = gen_parser()
+        args = gen_parser()
 	main(args)
