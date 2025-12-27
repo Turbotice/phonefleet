@@ -80,6 +80,10 @@ ssh -T git@github.com
 then 
 git clone git@github.com:Turbotice/phonefleet.git
 
+install the package :
+cd ~/git/phonefleet/
+python -m pip install .
+
 ——— Set up crontab ——
 Crontab can be used to run automatically scripts on the phone
 
