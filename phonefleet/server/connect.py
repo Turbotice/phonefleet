@@ -2,7 +2,25 @@ import subprocess
 from pprint import pprint
 global port
 port = 8080
-        
+import csv
+
+
+def get_my_MAC():
+        table = read_phone_table()
+
+
+def read_phone_table():
+        dic={}
+        with open('PhoneTable.csv', newline='') as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
+                header = spamreader[0][1:]
+                for row in spamreader[1:]:#remove header
+                        key = row[0]
+                        dic[key]={}
+                        for (k,elem) in zip(header,row[1:]):
+                                dic[key][k] = elem
+                                print(', '.join(row))
+                        
 def get_all_ips():
         out = subprocess.run('ifconfig',capture_output=True)
         lines = out.stdout.decode().split('\n')

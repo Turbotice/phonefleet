@@ -36,11 +36,12 @@ maintain ssh open whatever:
 https://samutz.com/docs/books/tech/page/setting-up-ssh-on-termux
 If need to reinstall Termux, you may need this command to reboot keys :
 ssh-keygen -R [192.168.223.219]:8022
+-> does not work reliably on the redmi10A
 
 
 
 ———— Other packages to install —————
-pkg install android-tools nmap termux-api termux-tools root-repo
+pkg install android-tools nmap termux-api termux-tools root-repo iproute2
 pkg install termux-am-socket #does not exist on the redmi
 apt upgrade
 
@@ -93,7 +94,14 @@ crontab -e
 
 #copy the default crontab file 
 
+Kill process issues on redmi :
+https://github.com/termux/termux-app/issues/2015
 
+Trying to fix it using  (in ~/.bashrc)
+nohup sshd -D &> /dev/null &
+termux-wake-lock
+nohup crond -n &>/dev/null &
+adb devices
 
 ———— Use the phone as a distant server ———
 
