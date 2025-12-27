@@ -101,3 +101,7 @@ def unlock():
 #network,phone = get_ip()
 
 
+if __name__ == '__main__':
+        myid = get_my_id()
+        print(myid)
+
