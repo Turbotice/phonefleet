@@ -1,0 +1,26 @@
+Subject: Activity Report FP3 
+
+Sat Dec 27 14:07:01 CET 2025
+
+{'adb': {'name': 'emulator-5554', 'status': 'device'},
+ 'apps': {'gobannos': True,
+          'teamviewer': True,
+          'termux': True,
+          'zerotier': True},
+ 'battery': {'charge_counter': 185379,
+             'current': -201416,
+             'health': 'GOOD',
+             'level': 61,
+             'percentage': 61,
+             'plugged': 'UNPLUGGED',
+             'present': 'true',
+             'scale': 100,
+             'status': 'DISCHARGING',
+             'technology': 'Li-ion',
+             'temperature': 25.4,
+             'voltage': 3933},
+ 'id': {'whoami': 'u0_a20'},
+ 'network': {'lo': '127.0.0.1 ',
+             'tun0': '172.28.88.62 ',
+             'wlan0': '192.168.1.22 '},
+ 'time': {'date': 'Sat Dec 27 14:07:01 CET 2025'}}
