@@ -166,3 +166,8 @@ cat report_exemple.txt | msmtp --debug stephane.perrard@espci.fr
 To get roughly the MAC addresse (still need to parse the lines)
 ip link | grep wlan0 -A 1
 
+Now implemented in 
+phonefleet.server.connect
+get_my_id()
+get_my_MAC()
+
