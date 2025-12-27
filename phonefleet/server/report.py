@@ -92,11 +92,10 @@ def mail_report(filename,email='stephane.perrard@espci.fr'):
                 
 def main(args):
 	report = full_report()
-        save_report(report,filename=args.filename)
-	
-        if args.mailit:
-                mail_report(args.filename,email=args.email)
+	save_report(report,filename=args.filename)
+	if args.mailit:
+		mail_report(args.filename,email=args.email)
 
 if __name__=='__main__':
-        args = gen_parser()
+	args = gen_parser()
 	main(args)
