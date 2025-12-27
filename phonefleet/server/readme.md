@@ -107,22 +107,11 @@ in Parameter/developer options, authorise ADB over Wifi
 Identify the port (random value, probably change over time)
 execute :
 adp pair ip_adress:port_pairing
-
 Then, give the id displayed on the phone
+
 execute :
 adb connect ip_adress:port_toconnect
 Beware, the port number is different !
-an adb device has been created, you can run classical adb command, for instance
-
-Unlock the screen (FP3 & FP4)
-adb shell input keyevent 82
-
-Unlock the screen (RD10A)
-adb shell input keyevent 82
-
-
-adb shell input keyevent 26 : lock the screen
-
 To move to a known port, you can run :
 adb tcpip 5555
 To show the device list, type
@@ -135,14 +124,30 @@ And restart adb by running :
 adb devices
 You should now have exactly one device in the list, of the type emulator-5554
 adb will be used by the crontab to unlock the screen before running Gobannos (work on FP3 & FP4, RD10A)
+A (self) adb device has been created, you can run classical adb command, for instance
+
+Unlock the screen (FP3 & FP4)
+adb shell input keyevent 82
+
+Unlock the screen (RD10A)
+python ~/git/phonefleet/phonefleet/server/unlock.py
+
+adb shell input keyevent 26 : lock the screen
+
 
 _______ set up a mail sender on the phone ————
 
 Follow :
 https://www.reddit.com/r/termux/comments/1mt3xi1/sending_email_from_termux_via_cli/
 
-And adapt it to ESPCI server
-Exemple configuration file in /phonefleet/phonefleet/server
+pkg install msmtp ca-certificates
 
+Copy the configuration file by default (for espci SMTP server): 
+cd ~/git/phonefleet/phonefleet/server
+cp msmtprc.txt ~/.msmtprc
+nano ~/.msmtprc
 
-cat report_2026_12_26_FP3.txt | msmtp --debug antonin.eddi@espci.fr jishen.zhang@espci.fr stephane.perrard@espci.fr
+Add the password
+
+Test it : 
+cat report_exemple.txt | msmtp --debug stephane.perrard@espci.fr
