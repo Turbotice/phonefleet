@@ -27,7 +27,7 @@ def get_my_id():
         
 def read_phone_table():
         dic={}
-        rows = read_csv('PhoneTable.csv')
+        rows = read_csv('/data/data/com.termux/files/home/git/phonefleet/phonefleet/server/PhoneTable.csv')
         header = rows[0][1:]
         for row in rows[1:]:#remove header
                 key = row[0]
