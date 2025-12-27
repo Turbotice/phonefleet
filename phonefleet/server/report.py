@@ -69,8 +69,8 @@ def add_header(report,file=None):
                 print(f'Subject: Activity Report for {myid} \n')
                 print(report['time']['date']+'\n')
         else:
-                print('Subject: Activity Report for {myid} \n',file=f)
-                print(report['time']['date']+'\n',file=f) # time key must exist in the report !
+                print(f'Subject: Activity Report for {myid} \n',file=file)
+                print(report['time']['date']+'\n',file=file) # time key must exist in the report !
 
 def cat_report(report,header=True):
         if header:
@@ -96,11 +96,11 @@ def mail_report(filename,email='stephane.perrard@espci.fr'):
                 
 def main(args):
 	report = full_report()
-        save_report(report,filename=args.filename)
-	
-        if args.mailit:
-                mail_report(args.filename,email=args.email)
+	save_report(report,filename=args.filename)
+
+	if args.mailit:
+		mail_report(args.filename,email=args.email)
 
 if __name__=='__main__':
-        args = gen_parser()
+	args = gen_parser()
 	main(args)
