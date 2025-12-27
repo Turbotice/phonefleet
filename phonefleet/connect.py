@@ -13,7 +13,7 @@ global port
 port = 8080
 
 def ipbase(network=network):
-    return f'{local}.{network}.'
+    return f"{local}.{network}."
 
 def basefolder():
     return 'Bic25/'

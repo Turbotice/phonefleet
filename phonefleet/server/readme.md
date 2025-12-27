@@ -159,3 +159,10 @@ Add the password
 
 Test it : 
 cat report_exemple.txt | msmtp --debug stephane.perrard@espci.fr
+
+
+———— Autoidentify a smartphone, using the PhoneTable ————
+
+To get roughly the MAC addresse (still need to parse the lines)
+ip link | grep wlan0 -A 1
+
