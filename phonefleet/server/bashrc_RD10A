@@ -1,0 +1,4 @@
+nohup sshd -D &> /dev/null &
+termux-wake-lock
+nohup crond -n &>/dev/null &
+adb devices
