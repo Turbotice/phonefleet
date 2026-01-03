@@ -25,7 +25,7 @@ def ramp(cmd=10):
 
 	a = urllib.request.urlopen(f"{url}/start").read()
 	songstart = '.mp3'
-	#subprocess.run(["play", songstart],capture_output=True,text=True,check=True)
+	subprocess.Popen(["play", songstart],capture_output=True,text=True,check=True)
 	
 	time.sleep(30)
 	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
@@ -35,6 +35,7 @@ def ramp(cmd=10):
 
 	time.sleep(0.1)
 	a = urllib.request.urlopen(f"{url}/status").read()
+	subprocess.wait()
 	print(a)
 
 def up():
