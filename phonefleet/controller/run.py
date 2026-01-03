@@ -14,18 +14,20 @@ def gen_parser():
 	parser.add_argument('-r',dest='ramp',type=str,default='down')
 	parser.add_argument('-all',dest='all',type=bool,default=False)
 	parser.add_argument('-n',dest='cycles',type=int,default=1)
-	
+	parser.add_argument('-s',dest='song',type=bool,default=False)
+
 	args = parser.parse_args()
 	return args
 
-def ramp(cmd=10):
+def ramp(cmd=10,song=False):
 	ip = connect.get_ip(protocol='self')
 	port = 8080
 	url = f"http://{ip}:{port}"
 
 	a = urllib.request.urlopen(f"{url}/start").read()
-	songstart = '.mp3'
-	subprocess.Popen(["play", songstart],capture_output=True,text=True,check=True)
+
+        if song:
+        	subprocess.Popen(["play", songstart],text=True)
 	
 	time.sleep(30)
 	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
@@ -35,7 +37,6 @@ def ramp(cmd=10):
 
 	time.sleep(0.1)
 	a = urllib.request.urlopen(f"{url}/status").read()
-	subprocess.wait()
 	print(a)
 
 def up():
@@ -44,9 +45,9 @@ def up():
 def down():
         a = ramp(cmd=10)
 
-def full(args):
+def full(args,song=False):
         #start by descending first
-        a = ramp(cmd=10)
+        a = ramp(cmd=10,song=song)
 
         time.sleep(5)
         #then ascend
@@ -55,12 +56,12 @@ def full(args):
 def main(args):
         if args.all == True:
                 for i in range(args.cycles):
-                        full(args)
+                        full(args,song=args.song)
         else:
                 if args.ramp == 'up':
-                        up(args)
+                        up(args,song=args.song)
                 elif args.ramp == 'down':
-                        down(args)
+                        down(args,song=args.song)
                         
 if __name__=='__main__':
         args = gen_parser()
