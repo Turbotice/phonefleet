@@ -11,6 +11,9 @@ def gen_parser():
 	parser = argparse.ArgumentParser(description="Run program to control Chipiron")
 	parser.add_argument('-r',dest='ramp',type=str,default='down')
 	parser.add_argument('-all',dest='all',type=bool,default=False)
+	
+	args = parser.parse_args()
+	return args
 
 def ramp(cmd=10):
 	ip = connect.get_ip(protocol='self')
