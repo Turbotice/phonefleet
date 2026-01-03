@@ -1,7 +1,7 @@
 import urllib.request
 import time
 
-
+import subprocess
 import phonefleet.server.connect as connect
 
 
@@ -25,8 +25,8 @@ def ramp(cmd=10):
 
 	a = urllib.request.urlopen(f"{url}/start").read()
 	songstart = '.mp3'
-        subprocess.run(["play", songstart],stdin=f,capture_output=True,text=True,check=True)
-        
+	#subprocess.run(["play", songstart],capture_output=True,text=True,check=True)
+	
 	time.sleep(30)
 	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
 
