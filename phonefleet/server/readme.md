@@ -171,3 +171,8 @@ phonefleet.server.connect
 get_my_id()
 get_my_MAC()
 
+scp -P 8022 yourfile whoami@ip:destfile
+
+### play audio
+
+apt install sox
