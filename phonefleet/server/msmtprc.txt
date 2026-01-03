@@ -11,6 +11,6 @@ host           mailer.espci.fr
 port           465
 from           stephane.perrard@espci.fr
 user           sperrard
-password       *********
+password       lde5Etrendopo
 
 account default : SP_ESPCI
