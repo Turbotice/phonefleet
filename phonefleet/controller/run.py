@@ -12,7 +12,7 @@ def gen_parser():
 	parser.add_argument('-r',dest='ramp',type=str,default='down')
 	parser.add_argument('-all',dest='all',type=bool,default=False)
 
-def up():
+def ramp(cmd=10):
 	ip = connect.get_ip(protocol='self')
 	port = 8080
 	url = f"http://{ip}:{port}"
@@ -20,7 +20,7 @@ def up():
 	a = urllib.request.urlopen(f"{url}/start").read()
 
 	time.sleep(30)
-	a = urllib.request.urlopen(f"{url}/usb-cmd/c90").read()
+	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
 
 	time.sleep(210)
 	a = urllib.request.urlopen(f"{url}/stop").read()
@@ -29,5 +29,29 @@ def up():
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
 
+def up():
+        a = ramp(cmd=90)
+
+def down():
+        a = ramp(cmd=10)
+
+def full():
+        #start by descending first
+        a = ramp(cmd=10)
+
+        time.sleep(5)
+        #then ascend
+        a = ramp(cmd=90)
+
+def main(args):
+        if args.all == True:
+                full()
+        else:
+                if args.ramp == 'up':
+                        up()
+                elif args.ramp == 'down':
+                        down()
+                        
 if __name__=='__main__':
-        main()
+        args = gen_parser()
+        main(args)
