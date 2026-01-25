@@ -25,9 +25,11 @@ def get_folder():
     if osname=='localhost':
         folder = '/storage/emulated/0/Documents/'
     elif ostype=='macOS':
+        folder = '/Volumes/Fabien_2024/Banquise/BicWin2026/Chipiron/Calibration/'
+        
+        #/Volumes/labshared2/Projet_E/Data/2025_1023/'
+        #folder = '/Users/stephane/Documents/git/phonefleet/phonefleet/Phonefleet/'
         #folder = '/Volumes/Fabien_2024/Dub25/FP4/IMU_Data/'#'Phonefleet/'
-        folder = '/Volumes/labshared2/Projet_E/Data/2025_1023/'
-        folder = '/Users/stephane/Documents/git/phonefleet/phonefleet/Phonefleet/'
 
         #folder = '/Volumes/Fabien_2024/Motor_Control/Tests/'#'Phonefleet/'
     elif ostype=='linux':
