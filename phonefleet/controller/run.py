@@ -16,7 +16,7 @@ def gen_parser():
 	parser.add_argument('-all',dest='all',type=bool,default=False)
 	parser.add_argument('-n',dest='cycles',type=int,default=1)
 	parser.add_argument('-s',dest='song',type=bool,default=False)
-
+	parser.add_argument('-d',dest='T',type=float,default=60)
 	args = parser.parse_args()
 	return args
 
@@ -46,27 +46,26 @@ def ramp(cmd=10,song=False):
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
 
-def steps(values,T=60):
-        ip = connect.get_ip(protocol='self')
-        port = 8080
-        url = f"http://{ip}:{port}"
+def steps(values,T=60,song=False):
+	ip = connect.get_ip(protocol='self')
+	port = 8080
+	url = f"http://{ip}:{port}"
 
-        a = urllib.request.urlopen(f"{url}/start").read()
+	a = urllib.request.urlopen(f"{url}/start").read()
 	if song:
 		subprocess.Popen(["play", songstart],text=True)
 	time.sleep(2)
 	
-        for cmd in values:
-                print(cmd,T)
-                a = command(cmd)
-                time.sleep(T)
+	for cmd in values:
+		print(cmd,T)
+		a = command(cmd)
+		time.sleep(T)
 
-        a = urllib.request.urlopen(f"{url}/stop").read()
+	a = urllib.request.urlopen(f"{url}/stop").read()
 
 	time.sleep(0.1)
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
-
 
 def up():
         a = ramp(cmd=90)
