@@ -24,16 +24,7 @@ def command(cmd):
 	ip = connect.get_ip(protocol='self')
 	port = 8080
 	url = f"http://{ip}:{port}"
-
-	a = urllib.request.urlopen(f"{url}/start").read()
-	time.sleep(2)
 	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
-	time.sleep
-	a = urllib.request.urlopen(f"{url}/stop").read()
-
-	time.sleep(0.1)
-	a = urllib.request.urlopen(f"{url}/status").read()
-	print(a)
 
 def ramp(cmd=10,song=False):
 	ip = connect.get_ip(protocol='self')
@@ -56,10 +47,26 @@ def ramp(cmd=10,song=False):
 	print(a)
 
 def steps(values,T=60):
+        ip = connect.get_ip(protocol='self')
+        port = 8080
+        url = f"http://{ip}:{port}"
+
+        a = urllib.request.urlopen(f"{url}/start").read()
+	if song:
+		subprocess.Popen(["play", songstart],text=True)
+	time.sleep(2)
+	
         for cmd in values:
                 print(cmd,T)
                 a = command(cmd)
                 time.sleep(T)
+
+        a = urllib.request.urlopen(f"{url}/stop").read()
+
+	time.sleep(0.1)
+	a = urllib.request.urlopen(f"{url}/status").read()
+	print(a)
+
 
 def up():
         a = ramp(cmd=90)
@@ -86,7 +93,7 @@ def main(args):
                         down(args,song=args.song)
         elif args.type == 'steps':
                 values = [11,12,15,20,30]
-                steps(values,T=60*5)
+                steps(values,T=args.T)
         else:
                 print('-t argument not recognized')
                         
