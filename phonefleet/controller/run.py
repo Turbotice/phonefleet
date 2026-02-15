@@ -12,8 +12,7 @@ songstart = "test.mp3"
 def gen_parser():
 	parser = argparse.ArgumentParser(description="Run program to control Chipiron")
 	parser.add_argument('-r',dest='ramp',type=str,default='down')
-	parser.add_argument('-t',dest='type',type=str,default='ramp')	
-	parser.add_argument('-all',dest='all',type=bool,default=False)
+	parser.add_argument('-all',dest='all',type=bool,default=True)
 	parser.add_argument('-n',dest='cycles',type=int,default=1)
 	parser.add_argument('-s',dest='song',type=bool,default=False)
 
@@ -31,9 +30,8 @@ def ramp(cmd=10,song=False):
 
 	a = urllib.request.urlopen(f"{url}/start").read()
 
-        if song:
-        	subprocess.Popen(["play", songstart],text=True)
-	
+	if song:
+		subprocess.Popen(["play", songstart],text=True)
 	time.sleep(30)
         a = command(cmd)
         
@@ -44,33 +42,27 @@ def ramp(cmd=10,song=False):
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
 
-def steps(values,T=60):
-        for cmd in values:
-                print(cmd,T)
-                a = command(cmd)
-                time.sleep(T)
-        
-def up():
-        a = ramp(cmd=90)
+def up(song=False):
+        a = ramp(cmd=90,song=song)
 
-def down():
-        a = ramp(cmd=10)
+def down(song=False):
+        a = ramp(cmd=10,song=song)
 
 def full(args,song=False):
         #start by descending first
-        a = ramp(cmd=10,song=song)
+        a = ramp(cmd=90,song=song)
 
         time.sleep(5)
         #then ascend
-        a = ramp(cmd=90)
+        a = ramp(cmd=10)
 
 def main(args):
-        if args.type == "full":
+        if args.all == True:
                 for i in range(args.cycles):
                         full(args,song=args.song)
         elif args.type == 'ramp':
                 if args.ramp == 'up':
-                        up(args,song=args.song)
+                        up(song=args.song)
                 elif args.ramp == 'down':
                         down(args,song=args.song)
         elif args.type == 'steps':
