@@ -41,7 +41,7 @@ ssh-keygen -R [192.168.223.219]:8022
 
 
 ———— Other packages to install —————
-pkg install android-tools nmap termux-api termux-tools root-repo iproute2
+pkg install android-tools nmap termux-api termux-tools root-repo iproute2 libusb
 pkg install termux-am-socket #does not exist on the redmi
 apt upgrade
 
@@ -57,7 +57,8 @@ pkg install git python build-essential cmake ninja libopenblas libandroid-execin
 pip3 install setuptools wheel packaging pyproject_metadata cython meson-python versioneer
 Check python version :
 python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'
-MATHLIB=m LDFLAGS="-lpython3.12" pip3 install --no-build-isolation --no-cache-dir numpy -vv
+MATHLIB=m LDFLAGS="-lpython3.12" 
+pip3 install --no-build-isolation --no-cache-dir numpy -vv
 
 
 ——— Set up git ————
@@ -79,10 +80,11 @@ ssh-add ~/.ssh/id_ed25519
 ssh -T git@github.com
 
 then 
+cd ~/git/
 git clone git@github.com:Turbotice/phonefleet.git
 
 install the package :
-cd ~/git/phonefleet/
+cd phonefleet/
 python -m pip install .
 
 ——— Set up crontab ——

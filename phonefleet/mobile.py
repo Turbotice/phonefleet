@@ -247,7 +247,8 @@ def defaults():
 
 def main():
     phonelist,network = defaults()
-
+    network = 164
+    phonelist = np.asarray([48,50,94,108,138,171])-100
     s=''
     while not s=='exit':
         s,output = choose(network,phonelist)

@@ -12,12 +12,17 @@ songstart = "test.mp3"
 def gen_parser():
 	parser = argparse.ArgumentParser(description="Run program to control Chipiron")
 	parser.add_argument('-r',dest='ramp',type=str,default='down')
+	parser.add_argument('-t',dest='type',type=str,default='ramp')	
 	parser.add_argument('-all',dest='all',type=bool,default=False)
 	parser.add_argument('-n',dest='cycles',type=int,default=1)
 	parser.add_argument('-s',dest='song',type=bool,default=False)
 
 	args = parser.parse_args()
 	return args
+
+def command(cmd):
+        return urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
+
 
 def ramp(cmd=10,song=False):
 	ip = connect.get_ip(protocol='self')
@@ -30,8 +35,8 @@ def ramp(cmd=10,song=False):
         	subprocess.Popen(["play", songstart],text=True)
 	
 	time.sleep(30)
-	a = urllib.request.urlopen(f"{url}/usb-cmd/c{cmd}").read()
-
+        a = command(cmd)
+        
 	time.sleep(210)
 	a = urllib.request.urlopen(f"{url}/stop").read()
 
@@ -39,6 +44,12 @@ def ramp(cmd=10,song=False):
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
 
+def steps(values,T=60):
+        for cmd in values:
+                print(cmd,T)
+                a = command(cmd)
+                time.sleep(T)
+        
 def up():
         a = ramp(cmd=90)
 
@@ -54,14 +65,19 @@ def full(args,song=False):
         a = ramp(cmd=90)
 
 def main(args):
-        if args.all == True:
+        if args.type == "full":
                 for i in range(args.cycles):
                         full(args,song=args.song)
-        else:
+        elif args.type == 'ramp':
                 if args.ramp == 'up':
                         up(args,song=args.song)
                 elif args.ramp == 'down':
                         down(args,song=args.song)
+        elif args.type == 'steps':
+                values = [11,12,15,20,30]
+                steps(values,T=60*5)
+        else:
+                print('-t argument not recognized')
                         
 if __name__=='__main__':
         args = gen_parser()
