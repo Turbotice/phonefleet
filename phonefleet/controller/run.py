@@ -46,7 +46,7 @@ def ramp(cmd=10,song=False):
 	a = urllib.request.urlopen(f"{url}/status").read()
 	print(a)
 
-def steps(values,T=60,song=False):
+def steps(values,times,song=False):
 	ip = connect.get_ip(protocol='self')
 	port = 8080
 	url = f"http://{ip}:{port}"
@@ -56,7 +56,7 @@ def steps(values,T=60,song=False):
 		subprocess.Popen(["play", songstart],text=True)
 	time.sleep(2)
 	
-	for cmd in values:
+	for (cmd,T) in zip(values,times):
 		print(cmd,T)
 		a = command(cmd)
 		time.sleep(T)
@@ -91,8 +91,11 @@ def main(args):
                 elif args.ramp == 'down':
                         down(args,song=args.song)
         elif args.type == 'steps':
-                values = [11,12,15,20,30]
-                steps(values,T=args.T)
+#                values = [11,12,15,20,30]
+                val = 20
+                values = [val,10,val,10,val,10,val,10,val,10]
+                times = [90,30,90,60,90,120,90,300,90,30]
+                steps(values,times)
         else:
                 print('-t argument not recognized')
                         
