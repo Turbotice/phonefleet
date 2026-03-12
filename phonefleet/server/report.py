@@ -12,7 +12,7 @@ import argparse
 def gen_parser():    
     parser = argparse.ArgumentParser(description="Produce activity reports")
     parser.add_argument('-test_gobannos', dest='gobannos', type=bool,default=False,help='Boolean, if true, test Gobannos connection')
-    parser.add_argument('-mailit', dest='mailit', type=bool,default=False,help='Boolean, send the report by email if True')
+    parser.add_argument('-mailit', dest='mailit', type=bool,default=True,help='Boolean, send the report by email if True')
     parser.add_argument('-email', dest='email', type=str,default="turbots.pmmh@gmail.com",help='email adress of the recipient')
     parser.add_argument('-filename', dest='filename', type=str,default="report.txt",help='Name of the file to save the report')
     parser.add_argument('-cmd', dest='cmd', type=bool,default=False,help='Boolean, if True, the program is executed by an external console (such as crontab)')
@@ -42,7 +42,7 @@ def full_report(header=True,test_gobannos=False):
                 report['battery'] = termux.get_battery()
                 report['id'] = termux.get_whoami()
                 report['network'] = termux.get_all_ips()
-                report['name'] = connect.get_my_id()
+                #report['name'] = connect.get_my_id()
         except:
                 print('Failed to execute basic Termux command. Check that termux is running')
 
@@ -52,7 +52,7 @@ def full_report(header=True,test_gobannos=False):
                 report['apps'] = termux.get_apps_running()
         except:
                 print('adb link may be broken, check that adb is running and device is connected')
-                
+
         # test Gobannos connexion, only works if screen is on
         if test_gobannos:
                 report['gobannos'] = status.get()
@@ -64,7 +64,12 @@ def full_report(header=True,test_gobannos=False):
         return report
 
 def add_header(report,file=None):
-        myid = connect.get_my_id()
+        try:
+                myid = connect.get_my_id()
+        except:
+                print('cannot idenfity device, check adb')
+                myid = 'None'
+
         if file==None:
                 print(f'Subject: Activity Report for {myid} \n')
                 print(report['time']['date']+'\n')
