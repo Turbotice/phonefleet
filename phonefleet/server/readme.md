@@ -1,12 +1,12 @@
 Install F-Droid
-From there install termux and termux:API
+From there install termux and termux:API, disable battery optimization
 > Mandatory to have access to the files !! (in particular on a Redmi)
 
-———— How to ssh to the Phone ————
+*** How to ssh to the Phone ***
 in the phone, open Termux and install ssh 
 pkg install openssh
 pkg install termux-services
-Enable ssh-agent
+sshd
 
 type sshd to check that ssh is running
 type whoami to get the username
@@ -19,18 +19,18 @@ where u0_a213 : phone identifier,
 password : usual
 specify the port (8022)
 
-
 to access the phone storage, type : 
 termux-setup-storage
 You wil need to grant access to your files to Termux
 
-——— Keep Termux running in the background ———
+***�� Keep Termux running in the background ***
 to keep running termux in the background, type 
 termux-wake-lock 
 Add an automatic script in the boot :
 nano ~/.bashrc
 sshd
 termux-wake-lock
+Your automatic script
 
 maintain ssh open whatever:
 https://samutz.com/docs/books/tech/page/setting-up-ssh-on-termux
@@ -38,9 +38,7 @@ If need to reinstall Termux, you may need this command to reboot keys :
 ssh-keygen -R [192.168.223.219]:8022
 -> does not work reliably on the redmi10A
 
-
-
-———— Other packages to install —————
+*** Other packages to install ***
 pkg install android-tools nmap termux-api termux-tools root-repo iproute2 libusb
 pkg install termux-am-socket #does not exist on the redmi
 apt upgrade
@@ -61,7 +59,7 @@ MATHLIB=m LDFLAGS="-lpython3.12"
 pip3 install --no-build-isolation --no-cache-dir numpy -vv
 
 
-——— Set up git ————
+*** Set up git ***
 
 On the phone make a git repository in ~/, type
 mkdir ~/git
