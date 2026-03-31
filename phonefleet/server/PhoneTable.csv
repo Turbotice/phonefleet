@@ -4,9 +4,9 @@ FP4_00;FP;92:6f:81:b4:21:4b;30/6/25;yes;yes;u0_a213;;172.28.247.166
 FP3_00;FP;ee:3f:5f:78:d2:20;1/11/25;yes;yes;u0_a20;192.168.1.22;172.28.88.62
 R10A_0;Xiaomi;94:7b:ae:48:62:74;15/10/23;yes;yes;u0_a341;192.168.1.24;172.28.31.132
 R10A_1;Xiaomi;e0:80:6b:1e:f8:aa;15/10/23;yes;yes;u0_a300;192.168.1.23;172.28.15.53
-R10A_2;Xiaomi;e0:80:6b:fe:82:be;25/10/23;yes;No;;;
-R10A_3;Xiaomi;48:87:59:ae:3e:80;25/10/23;yes;No;;;
-R10A_4;Xiaomi;e0:80:6b:1f:b6:da;25/10/23;yes;No;;;
+R10A_2;Xiaomi;e0:80:6b:fe:82:be;25/10/23;yes;yes;;;
+R10A_3;Xiaomi;48:87:59:ae:3e:80;25/10/23;yes;yes;;;
+R10A_4;Xiaomi;e0:80:6b:1f:b6:da;25/10/23;yes;yes;;;
 R10A_5;Xiaomi;e0:80:6b:1f:ad:5c;25/10/23;yes;No;;;
 R10A_6;Xiaomi;88:52:eb:2f:4a:92;2/11/23;yes;No;;;
 R10A_7;Xiaomi;88:52:eb:2d:6f:3c;26/10/23;yes;No;;;
@@ -32,8 +32,8 @@ R10A_26;Xiaomi;88:52:eb:2d:79:fc;30/10/23;yes;No;;;
 R10A_27;Xiaomi;88:52:eb:2d:76:7a;30/10/23;yes;No;;;
 R10A_28;Xiaomi;88:52:eb:2a:f7:16;30/10/23;yes;No;;;
 R10A_29;Xiaomi;88:52:eb:2d:6f:a2;2/11/23;yes;No;;;
-R10A_30;Xiaomi;88:52:eb:2d:8c:c2;2/11/23;yes;No;;;
-R10A_31;Xiaomi;88:52:eb:2d:6c:92;30/10/23;yes;No;;;
+R10A_30;Xiaomi;88:52:eb:2d:8c:c2;2/11/23;yes;yes;u0_a231;;
+R10A_31;Xiaomi;88:52:eb:2d:6c:92;30/10/23;yes;yes;u0_a236;;
 R10A_32;Xiaomi;88:52:eb:2d:8d:78;2/11/23;yes;No;;;
 R10A_33;Xiaomi;88:52:eb:2d:8b:84;30/10/23;yes;No;;;
 R10A_34;Xiaomi;88:52:eb:2d:87:24;30/10/23;yes;No;;;
