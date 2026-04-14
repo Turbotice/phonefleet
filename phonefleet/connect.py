@@ -7,7 +7,7 @@ import urllib
 
 global local
 local = '192.168'
-local = '10.167'
+#local = '10.167'
 global network
 network = 164
 global port
