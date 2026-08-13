@@ -42,21 +42,10 @@ def full_report(header=True,test_gobannos=False):
                 report['battery'] = termux.get_battery()
                 report['gps'] = termux.get_gps_position()
                 report['id'] = termux.get_whoami()
-                report['network'] = termux.get_all_ips()
+                #report['network'] = termux.get_all_ips()
                 #report['name'] = connect.get_my_id()
         except:
                 print('Failed to execute basic Termux command. Check that termux is running')
-
-        #following steps required adb, may fall off
-        try:
-                report['adb'] = termux.get_adb_status()
-                report['apps'] = termux.get_apps_running()
-        except:
-                print('adb link may be broken, check that adb is running and device is connected')
-
-        # test Gobannos connexion, only works if screen is on
-        if test_gobannos:
-                report['gobannos'] = status.get()
 
         if header:
                 add_header(report)
