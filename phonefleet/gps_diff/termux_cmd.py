@@ -78,6 +78,13 @@ def get_gps_position():
     lines = catch_output(out)
     dic = parse_battery_output(lines)
     return dic
+
+def get_sensors():
+    out = subprocess.run(['termux-sensor','-s','linear_acceleration,mmc56,Rotation','-d','100'],capture_output=True)
+    lines = catch_output(out)
+    dic = parse_battery_output(lines)
+    return dic    
+
     
 def get_all_ips():
         out = subprocess.run('ifconfig',capture_output=True)
