@@ -58,6 +58,7 @@ def add_header(report,file=None):
                 pass
                 # add local way to identify phone
                 #myid = connect.get_my_id()
+                myid = 'None'
         except:
                 print('cannot idenfity device, check adb')
                 myid = 'None'
