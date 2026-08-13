@@ -4,7 +4,7 @@ from pprint import pprint
 global port
 port = 8080
 import csv
-
+import time
 
 def get_my_MAC(protocol='wlan0'):
         out = subprocess.run(['adb','shell','ip','link'],text=True,capture_output=True)
@@ -92,11 +92,22 @@ def get_local_ip(protocol='wlan'):
 	return network,phone
 
 
-def unlock():
+def unlock(phone='FP'):
 #process to self unlock the redmis
-    c=subprocess.run(['adb','shell','input','keyevent','KEYCODE_WAKEUP'],text=True,capture_output=True)
+    c=subprocess.run(['adb','shell','input','keyevent','82'],text=True,capture_output=True)#KEYCODE_WAKEUP
+#    c=subprocess.run(['adb','shell','input','keyevent','KEYCODE_WAKEUP'],text=True,capture_output=True)
+    time.sleep(0.2)
+    print('swipe')
     c=subprocess.run(['adb','shell','input','swipe','200','900','200','300'],text=True,capture_output=True)
-    c=subprocess.run(['adb','shell','input','text','01012000'],text=True,capture_output=True)
+    time.sleep(1)
+    if phone=='FP':
+        passwd = '0000'
+    else:
+        passwd = '01012000'
+    print('passwd')
+    c=subprocess.run(['adb','shell','input','text',passwd],text=True,capture_output=True)
+    print(c)
+    time.sleep(0.1)
     c=subprocess.run(['adb','shell','input','keyevent','66'],text=True,capture_output=True)
     
 #network,phone = get_ip()

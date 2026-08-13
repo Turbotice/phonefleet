@@ -2,6 +2,7 @@ import glob
 import os
 import numpy as np
 import time
+import csv
 
 global table
 global exclude
@@ -9,6 +10,7 @@ table = {'Accelerometer':'a','Gyroscope':'g','Location':'l','Magnetometer':'m','
 table.update({'accelerometer':'a','gyroscope':'g','magnetic_field':'m','usb':'u'})
 exclude = ['coords'] # field to not be concatenated
 coords = ['x','y','z']
+import phonefleet.rw_data as rw
 
 def get_number(folder):
     #find phone number from the name of the folder
@@ -168,14 +170,30 @@ def sync_time(data,tsync=None):
         tlag = t1 - t0/1e6
         #print(tlag)
     else:
-        #load the time sync folder and do something with it
-        tlag = 0
-        print('Tsync function to be implemented')
-        pass
+        lags,errs = load_syncfile(tsync)
+        tlag = lags[data['phone']]
     key_times,variables = get_times(data)
     for key in key_times:
         data[key]=data[key]/1e6+tlag
     return data
+
+def load_syncfile(syncfile):
+    tab = read_csv(syncfile)
+    tab = csv2dict(tab)
+    buf = {}
+    for key in tab.keys():
+        phone = tab[key]['phone']
+        if phone in buf.keys():
+            buf[phone].append(tab[key]['tlag'])
+        else:
+            buf[phone] = [tab[key]['tlag']]
+
+    tlag = {}
+    terr = {}
+    for phone in buf.keys():
+        tlag[phone] = np.mean(buf[phone])
+        terr[phone] = np.std(buf[phone])
+    return tlag,terr
 
 def get_times(data):
     keys = [key for key in data.keys() if key[0]=='t']
@@ -216,6 +234,47 @@ def get_time(data):
     t1 = data[key][-1]
     Dt = t1 - t0
     return t0,t1,Dt
+
+def read_csv(filename,delimiter=','):
+    rows = []
+    with open(filename,'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=delimiter, quotechar='|')
+        for row in spamreader:
+            rows.append(row)
+    return rows
+
+
+def csv2dict(table,headerindex=0,symbol='#'):
+    data = {}
+    if table[0][0]==symbol:
+        keys = table[0][1:]
+        #print(keys)
+        for tab in table[1:]:
+            try:
+                #try to convert to int the key
+                tab[0]=int(tab[0])
+            except:
+                pass #do nothing
+            #print(tab)
+            data[tab[0]]={}
+            for (t,key) in zip(tab[1:],keys):
+                if '.' in t:
+                    data[tab[0]][key]=float(t)
+                else:
+                    try:
+                        data[tab[0]][key]=int(t)
+                    except:
+                        data[tab[0]][key]=str(t)
+    else:
+        header = table[headerindex]
+        data = {}
+        for key in header:
+            data[key]=[]
+        for i in range(headerindex+1,len(table)):
+            for j,key in enumerate(header):
+                data[key].append(table[i][j])
+    return data
+
 
 def get_mean_position(data):
     if not 'loc' in data.keys():
