@@ -46,9 +46,9 @@ def full_report(header=True,test_gobannos=False):
                 #report['name'] = connect.get_my_id()
         except:
                 print('Failed to execute basic Termux command. Check that termux is running')
-
-        if header:
-                add_header(report)
+        #if header:
+        #        add_header(report)
+        
         pprint(report)
 
         return report
