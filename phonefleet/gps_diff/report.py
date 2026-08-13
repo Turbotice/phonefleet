@@ -55,7 +55,9 @@ def full_report(header=True,test_gobannos=False):
 
 def add_header(report,file=None):
         try:
-                myid = connect.get_my_id()
+                pass
+                # add local way to identify phone
+                #myid = connect.get_my_id()
         except:
                 print('cannot idenfity device, check adb')
                 myid = 'None'
