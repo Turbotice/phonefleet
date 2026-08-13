@@ -73,6 +73,11 @@ def parse_battery_output(lines):
         #print(key,outs[key])
     return outs
 
+def get_gps_position():
+    out = subprocess.run('termux-location',capture_output=True)
+    lines = catch_output(out)
+    dic = parse_battery_output(lines)
+    return dic
     
 def get_all_ips():
         out = subprocess.run('ifconfig',capture_output=True)
