@@ -13,8 +13,9 @@ filelist = glob.glob(folder+'/*.png')
 screen_count = len(filelist)
 
 def check_screenshots():
+        global screen_count
         filelist = glob.glob(folder+'/*.png')
-        if len(filelist)>screen_count:
+        if len(filelist) > screen_count:
                 success = pairing_device()
                 if success:
                         screen_count += 1
