@@ -198,3 +198,7 @@ https://github.com/cvzi/ScreenshotTile#automatic-screenshots-with-broadcast-inte
 
 pkg install tesseract
 python3 -m pip install pytesseract
+
+### listing all packages installed:
+adb shell cmd package list packages
+

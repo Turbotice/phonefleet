@@ -13,7 +13,7 @@ def get_apps_running():
                  'zerotier':'com.zerotier.one',
                  'teamviewer':'com.teamviewer.quicksupport.addon.universal',
                  'screenshottile':'com.github.cvzi.screenshottile',
-                 'wireguard':'com.wireguard.android'}
+                 'qrvpn':'com.qrvpn'}
     for name in names.keys():
         dic.update(is_app_running(name,names[name]))
     return dic
