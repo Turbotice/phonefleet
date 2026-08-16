@@ -32,6 +32,13 @@ sshd
 termux-wake-lock
 Your automatic script
 
+nohup sshd -D &> /dev/null &
+termux-wake-lock
+nohup crond -n &>/dev/null &
+adb devices
+
+
+
 maintain ssh open whatever:
 https://samutz.com/docs/books/tech/page/setting-up-ssh-on-termux
 If need to reinstall Termux, you may need this command to reboot keys :
@@ -51,7 +58,8 @@ https://github.com/termux/termux-packages/discussions/19126
 
 
 pkg upgrade
-pkg install git python build-essential cmake ninja libopenblas libandroid-execinfo patchelf binutils-is-llvm
+pkg install git python build-essential cmake ninja libopenblas libandroid-execinfo patchelf llvm lld
+
 pip3 install setuptools wheel packaging pyproject_metadata cython meson-python versioneer
 Check python version :
 python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'
@@ -112,14 +120,15 @@ Use the wifi connection, unclear it would work through internet -> yes if the ph
 
 Unlock adb commands :
 in Parameter/developer options, authorise ADB over Wifi
-Identify the port (random value, probably change over time)
+Click on "Pair device with pairing code"
 execute :
-adp pair ip_adress:port_pairing
-Then, give the id displayed on the phone
+adbadb  pair ip_adress:port_pairing
+Then, give the 6 numbers passcode displayed on the phone
 
-execute :
+To create a link, execute :
 adb connect ip_adress:port_toconnect
-Beware, the port number is different !
+Beware, the port number is different ! It is the one shown on the main Wireless debugging screen. A link has now been created, with that random port number
+
 To move to a known port, you can run :
 adb tcpip 5555
 To show the device list, type
@@ -160,7 +169,6 @@ Add the password
 Test it : 
 cat report_exemple.txt | msmtp --debug stephane.perrard@espci.fr
 
-
 ———— Autoidentify a smartphone, using the PhoneTable ————
 
 To get roughly the MAC addresse (still need to parse the lines)
@@ -176,3 +184,17 @@ scp -P 8022 yourfile whoami@ip:destfile
 ### play audio
 
 apt install sox
+
+### Install & Use wireguard
+
+On the phone in termux terminal, run
+pkg install wireguard-tools iproute2
+
+### To take screenshot,
+install screenshottile through F-Droid, follow instructions here : 
+https://github.com/cvzi/ScreenshotTile#automatic-screenshots-with-broadcast-intents
+
+
+
+pkg install tesseract
+python3 -m pip install pytesseract
