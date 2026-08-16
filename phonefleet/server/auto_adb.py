@@ -9,11 +9,13 @@ import time
 global folder
 folder = '/data/data/com.termux/files/home/storage/pictures/Screenshots'
 global screen_count
+global filelist
 filelist = glob.glob(folder+'/*.png')
 screen_count = len(filelist)
 
 def check_screenshots():
         global screen_count
+        global filelist
         filelist = glob.glob(folder+'/*.png')
         if len(filelist) > screen_count:
                 success = pairing_device()
@@ -22,6 +24,7 @@ def check_screenshots():
                         
 def pairing_device():
 #pprint(filelist)
+        global filelist
         image_path = filelist[-1]
         print(image_path)
 
