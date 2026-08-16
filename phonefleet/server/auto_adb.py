@@ -5,6 +5,7 @@ from PIL import Image
 import pytesseract
 import phonefleet
 import time
+import datetime
 
 global folder
 folder = '/data/data/com.termux/files/home/storage/pictures/Screenshots'
@@ -18,6 +19,7 @@ def check_screenshots():
         global filelist
         filelist = glob.glob(folder+'/*.png')
         if len(filelist) > screen_count:
+                print('New screenshot detected, parsing text ...')
                 success = pairing_device()
                 if success:
                         screen_count += 1
@@ -58,5 +60,6 @@ def pairing_device():
 
 if __name__=='__main__':
         while True:
+                print(f"Check for new screenshot at {str(datetime.datetime.now())}")
                 check_screenshots()
                 time.sleep(10)
