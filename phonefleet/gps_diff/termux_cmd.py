@@ -1,5 +1,9 @@
 import subprocess
 from pprint import pprint
+import phonefleet.rw_data as rw
+from datetime import datetime
+import zoneinfo
+
 
 def catch_output(out):
     lines = out.stdout.decode().split('\n')
@@ -23,8 +27,77 @@ def is_app_running(name,name_id):
     else:
         dic[name]=False
     return dic
-        
-        
+
+def read_csv_gps(filename):
+    raws = rw.read_csv(filename,delimiter=':')
+    print(len(raws))
+    d = {}
+    for raw in raws:
+        if raw[0][0]=='{' or raw[0][:2]==" '":
+        #print('Attribute : '+raw[0][2:-1])
+        #print(raw)
+            key = raw[0][2:-1]
+            parse = raw[1].split("'")
+            if len(parse)>=2:
+                k = parse[1]            
+            #print(parse)
+            else:
+            #print(f'no value detected for {key}')
+                continue
+            if key=='time':
+                elem = ':'.join(raw[2:])[:-2].split("'")[1]#.split(" ")[1]
+            elif key=='id':
+                elem = raw[2][:-2].split("'")[1]#.split(" ")[1]
+            elif len(raw)>2:
+                elem = raw[2].split(" ")[1]
+            else:
+                elem = None
+            if not key in d.keys():
+                d[key] = [{}]
+            else:
+                d[key].append({})
+        else:
+            k = raw[0].split("'")[1]
+            elem = raw[1].split(" ")[1]
+        #print(key,k,elem)
+        d[key][-1][k]=elem
+#        print(raw)
+        #print('   '+raw[0])
+    return d
+
+def convert_time(date):
+    # The original date string
+    date_str = date
+    # 1. Strip the weekday and 'CEST' for easier standard parsing
+    # "Sat Aug 15 09:55:00 CEST 2026" -> "Aug 15 09:55:00 2026"
+    clean_str = " ".join(date_str.split()[1:4] + [date_str.split()[-1]])
+    # 2. Parse the cleaned string into a naive datetime object
+    naive_dt = datetime.strptime(clean_str, "%b %d %H:%M:%S %Y")
+    # 3. Attach the correct Central European Summer Time zone (UTC+2)
+    # CEST is equivalent to the Europe/Paris or Europe/Berlin timezone in August
+    localized_dt = naive_dt.replace(tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
+    # 4. Convert to a Unix timestamp float
+    timestamp_float = localized_dt.timestamp()
+    return timestamp_float
+
+def trajectory(dic,imin=0,imax=-1):
+    m = {}
+    m['latitude'] = []
+    m['longitude'] = []
+    m['t'] = []
+
+    for gps,t in zip(dic['gps'][imin:imax],dic['time'][imin:imax]):
+        lat = float(gps['latitude'][:-1])
+        lon = float(gps['longitude'][:-1])
+            
+        #print(lat,lon)
+        m['latitude'].append(lat)
+        m['longitude'].append(lon)
+        #t0 = convert_time(t['date'])#convert_time(t['date'])
+        m['t'].append(t['date'])
+    return m
+        #plt.plot(lon,lat,color+'.')
+
 def get_time():
     out = subprocess.run('date',capture_output=True)
     lines = catch_output(out)
