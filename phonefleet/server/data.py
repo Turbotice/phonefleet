@@ -20,7 +20,14 @@ def search(folder=None,date=None):
         filelist = glob.glob(folder + f'{key}*.csv') 
         data[key]={}
         data[key]['filelist']=filelist
+        data[key]['n']=len(filelist)
     return data
+
+def display(data):
+    for key in data.keys():
+        print(key, data[key]['n'])
+        #print(data[key]['filelist'])
+        #print()
 
 def combine(data):
     data['data']={}

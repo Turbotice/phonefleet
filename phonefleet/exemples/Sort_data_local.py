@@ -6,7 +6,9 @@ from pprint import pprint
 
 # if no folder and no date are specified, the default folder is used and all files are searched
 datas = dataphone.search()
-print(list(datas.keys()))
+print(dataphone.display(datas))
+
+#print(list(datas.keys()))
 
 print(toto)
 
