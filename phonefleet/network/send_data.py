@@ -1,6 +1,7 @@
 import subprocess
 import phonefleet.server.data as dataphone
 import numpy as np
+import phonefleet.network.whoami as whoami
 
 global LOCAL_FOLDER
 LOCAL_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos/'
@@ -14,14 +15,17 @@ global IP_ADDRESS
 IP_ADDRESS = '172.30.0.5'
 
 def command(filename):
+    whoami_info = whoami.get_phone_info()
+
+    folder = f"{SERVEUR_FOLDER}@{whoami_info['Name']}/" #also add date to the folder path
     cmd  = [
         "scp",
         "-i", "/data/data/com.termux/files/home/.ssh/id_ed25519",  # Assurez-vous que ce chemin est correct
         filename,
-        f"{USERNAME}@{IP_ADDRESS}:{SERVEUR_FOLDER}"
+        f"{USERNAME}@{IP_ADDRESS}:{folder}"
     ]
-    if not os.path.exists(SERVEUR_FOLDER):
-        os.makedirs(SERVEUR_FOLDER)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     return cmd
 
 def send_data(data):
