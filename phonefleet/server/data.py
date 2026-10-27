@@ -37,6 +37,27 @@ def parse_filename(filename):
     dic['tend'] = int(parts[5].split('.')[0])
     return dic
 
+def sort_data(data):
+    #sort the data by num from a filelist sharing the same key (date of start)
+    sorted = {}
+    for filename in data['filelist']:
+        dic = dataphone.parse_filename(filename)
+        if not dic['num'] in sorted.keys():
+            sorted[dic['num']] = {}
+            sorted[dic['num']]['filelist'] = [filename]
+        else:
+            sorted[dic['num']]['filelist'].append(filename)
+    return sorted
+
+def complete_data(data):
+    #check if the data is complete (all 4 files present)
+    complete = []
+    nums = np.sort(list(data.keys()))
+    for num in nums:
+        if len(data[num]['filelist'])>=4:
+            complete.append(num)
+    return complete
+
 def display(data):
     keys = np.sort(list(data.keys()))
     for key in keys:
