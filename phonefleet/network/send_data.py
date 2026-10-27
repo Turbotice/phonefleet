@@ -16,7 +16,7 @@ IP_ADDRESS = '172.30.0.5'
 
 def command(filename):
     whoami_info = whoami.get_phone_info()
-
+    print(f"Phone info: {whoami_info}")
     folder = f"{SERVEUR_FOLDER}@{whoami_info['Name']}/" #also add date to the folder path
     cmd  = [
         "scp",

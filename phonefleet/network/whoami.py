@@ -46,8 +46,8 @@ def csv2dict(table,headerindex=0,symbol='#'):
 
 def get_phone_info():
     fileinfo = "/data/data/com.termux/files/home/Phone.info"
-    if os.path.exists(filename):
-        raw = read_csv(filename,delimiter='\t')
+    if os.path.exists(fileinfo):
+        raw = read_csv(fileinfo,delimiter='\t')
         info = csv2dict(raw)
         return info
     else:
