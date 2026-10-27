@@ -21,8 +21,15 @@ for filename in data['filelist']:
     else:
         sorted[dic['num']]['filelist'].append(filename)
 
-for num in sorted.keys():
+nums = np.sort(list(sorted.keys()))
+complete = []
+for num in nums:
     print(f"{num} : {len(sorted[num]['filelist'])}")
-    #sorted[num]['data'] = dataphone.combine(sorted[num])
+    #sorted[num]['data'] = dataphone.combine(sorted[num]['filelist'])
+    if len(sorted[num]['filelist'])>=4:
+        complete.append(num)
 
-print(np.sort(list(sorted.keys())))
+num = complet[-1] 
+# load the data for the last complete set of files
+sorted[num]['data'] = dataphone.combine(sorted[num]['filelist'])
+print(sorted[num]['data'].keys())
