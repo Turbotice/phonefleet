@@ -1,9 +1,11 @@
 
 import phonefleet.rw_data as rw
-
+import numpy as np
+import os
+import glob 
 
 global SERVEUR_FOLDER
-SERVEUR_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos
+SERVEUR_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos'
 
 def search(folder=None,date=None):
     if folder is None:
@@ -22,7 +24,7 @@ def search(folder=None,date=None):
 
 def combine(data):
     data['data']={}
-    for filename in filelist:
+    for filename in data['filelist']:
         data['data'].update(load_data(filename))
     return data
 
