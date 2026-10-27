@@ -19,14 +19,16 @@ def command(filename):
     whoami_info = whoami.get_phone_info()
     print(f"Phone info: {whoami_info}")
     folder = f"{SERVEUR_FOLDER}{whoami_info['Name']}/" #also add date to the folder path
+    filedest = '.'.join(os.path.basename(filename).split('.')[:-1])+ f'_{whoami_info['Name']}.csv' #remove the extension and name of the phone in the name of the files
+    destination = f"{folder}{filedest}"
     cmd  = [
         "scp",
         "-i", "/data/data/com.termux/files/home/.ssh/id_ed25519",  # Assurez-vous que ce chemin est correct
         filename,
-        f"{USERNAME}@{IP_ADDRESS}:{folder}"
+        f"{USERNAME}@{IP_ADDRESS}:{destination}"
     ]
-    if not os.path.exists(folder):
-        print(f"Create folder {folder} on the server !")#    os.makedirs(folder)
+    #if not os.path.exists(folder):
+    #    print(f"Create folder {folder} on the server !")#    os.makedirs(folder)
     return cmd
 
 def send_data(data):
