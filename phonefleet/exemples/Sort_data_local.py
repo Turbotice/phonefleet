@@ -8,9 +8,9 @@ from pprint import pprint
 datas = dataphone.search()
 
 print(datas.keys())
-print(dataphone.display(datas))
-
+#print(dataphone.display(datas))
 keys = np.sort(datas.keys())
+print(keys)
 
 last = keys[-1]
 #load all the data, may take a while !
