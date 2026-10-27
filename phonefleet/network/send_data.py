@@ -1,5 +1,6 @@
 import subprocess
 import phonefleet.server.data as dataphone
+import numpy as np
 
 global LOCAL_FOLDER
 LOCAL_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos/'
