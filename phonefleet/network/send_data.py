@@ -16,7 +16,7 @@ def command(filename):
     cmd  = [
         "scp",
         "-i", "/data/data/com.termux/files/home/.ssh/id_ed25519",  # Assurez-vous que ce chemin est correct
-        filename
+        filename,
         f"{USERNAME}@{IP_ADDRESS}:{SERVEUR_FOLDER}"
     ]
     return cmd
