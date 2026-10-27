@@ -20,6 +20,8 @@ def command(filename):
         filename,
         f"{USERNAME}@{IP_ADDRESS}:{SERVEUR_FOLDER}"
     ]
+    if not os.path.exists(SERVEUR_FOLDER):
+        os.makedirs(SERVEUR_FOLDER)
     return cmd
 
 def send_data(data):
