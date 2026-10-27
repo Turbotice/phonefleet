@@ -24,7 +24,7 @@ def search(folder=None,date=None):
     return data
 
 def display(data):
-    keys = np.sort(datas.keys())
+    keys = np.sort(data.keys())
     for key in keys:
         print(key, data[key]['n'])
         #print(data[key]['filelist'])
