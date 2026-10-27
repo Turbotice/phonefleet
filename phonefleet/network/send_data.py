@@ -25,7 +25,7 @@ def send_data(data):
     for filename in data['filelist']:
         try:
             #run a scp per filename, using the command function to build the command    
-                result = subprocess.run(command(filename), check=True, capture_output=True, text=True)
+            result = subprocess.run(command(filename), check=True, capture_output=True, text=True)
             print("Fichiers copiés avec succès !")
         except subprocess.CalledProcessError as e:
             print(f"Erreur scp (Code {e.returncode}) : {e.stderr}")
