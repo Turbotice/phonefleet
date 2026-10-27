@@ -26,7 +26,7 @@ def command(filename):
         f"{USERNAME}@{IP_ADDRESS}:{folder}"
     ]
     if not os.path.exists(folder):
-        os.makedirs(folder)
+        print(f"Create folder {folder} on the server !")#    os.makedirs(folder)
     return cmd
 
 def send_data(data):
