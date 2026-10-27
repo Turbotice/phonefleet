@@ -49,6 +49,7 @@ def get_phone_info():
     if os.path.exists(fileinfo):
         raw = read_csv(fileinfo,delimiter='\t')
         info = csv2dict(raw)
+        info['Name'] = info['Name'][0]
         return info
     else:
         print("No Phone.info file found, please create it")
