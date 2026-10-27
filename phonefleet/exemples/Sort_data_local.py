@@ -31,5 +31,5 @@ for num in nums:
 
 num = complete[-1] 
 # load the data for the last complete set of files
-sorted[num]['data'] = dataphone.combine(sorted[num]['filelist'])
+sorted[num].update(dataphone.combine(sorted[num]))
 print(sorted[num]['data'].keys())
