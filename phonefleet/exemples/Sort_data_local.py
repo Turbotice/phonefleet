@@ -29,7 +29,7 @@ for num in nums:
     if len(sorted[num]['filelist'])>=4:
         complete.append(num)
 
-num = complet[-1] 
+num = complete[-1] 
 # load the data for the last complete set of files
 sorted[num]['data'] = dataphone.combine(sorted[num]['filelist'])
 print(sorted[num]['data'].keys())
