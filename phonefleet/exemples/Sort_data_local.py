@@ -10,6 +10,7 @@ datas = dataphone.search()
 print(dataphone.display(datas))
 keys = np.sort(list(datas.keys()))
 last = keys[-1]
-#load all the data, may take a while !
-datas[last] = dataphone.combine(datas[last])
-print(datas[last]['data'].keys())
+#load all the data from the last recording, may take a while !
+print(datas[last]['filelist'])
+#datas[last] = dataphone.combine(datas[last])
+#print(datas[last]['data'].keys())
