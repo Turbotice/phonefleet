@@ -5,7 +5,7 @@ import os
 import glob 
 
 global SERVEUR_FOLDER
-SERVEUR_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos'
+SERVEUR_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos/'
 
 def search(folder=None,date=None):
     if folder is None:
