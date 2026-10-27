@@ -41,7 +41,7 @@ def sort_data(data):
     #sort the data by num from a filelist sharing the same key (date of start)
     sorted = {}
     for filename in data['filelist']:
-        dic = dataphone.parse_filename(filename)
+        dic = parse_filename(filename)
         if not dic['num'] in sorted.keys():
             sorted[dic['num']] = {}
             sorted[dic['num']]['filelist'] = [filename]
