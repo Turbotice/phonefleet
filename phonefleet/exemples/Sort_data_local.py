@@ -10,7 +10,19 @@ datas = dataphone.search()
 print(dataphone.display(datas))
 keys = np.sort(list(datas.keys()))
 last = keys[-1]
-#load all the data from the last recording, may take a while !
-print(datas[last]['filelist'])
-#datas[last] = dataphone.combine(datas[last])
-#print(datas[last]['data'].keys())
+
+data = datas[last]
+sorted = {}
+for filename in data['filelist']:
+    dic = dataphone.parse_filename(filename)
+    if not dic['num'] in sorted.keys():
+        sorted[dic['num']] = {}
+        sorted[dic['num']]['filelist'] = [filename]
+    else:
+        sorted[dic['num']]['filelist'].append(filename)
+
+for num in sorted.keys():
+    print(f"{num} : {len(sorted[num]['filelist'])}")
+    #sorted[num]['data'] = dataphone.combine(sorted[num])
+
+print(np.sort(list(sorted.keys())))

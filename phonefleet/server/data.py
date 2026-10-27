@@ -23,6 +23,20 @@ def search(folder=None,date=None):
         data[key]['n']=len(filelist)
     return data
 
+def parse_filename(filename):
+    name = os.path.basename(filename)
+    parts = name.split('-')
+    if len(parts)<5:
+        print('Filename not recognized')
+        return None
+    dic = {}
+    dic['date'] = '-'.join(parts[:3])
+    dic['type'] = parts[3]
+    dic['num'] = int(parts[4])
+    dic['tsart'] = int(parts[5])
+    dic['tend'] = int(parts[5].split('.')[0])
+    return dic
+
 def display(data):
     keys = np.sort(list(data.keys()))
     for key in keys:
