@@ -2,6 +2,7 @@ import subprocess
 import phonefleet.server.data as dataphone
 import numpy as np
 import phonefleet.network.whoami as whoami
+import os
 
 global LOCAL_FOLDER
 LOCAL_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos/'
