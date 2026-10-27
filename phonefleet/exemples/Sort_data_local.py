@@ -6,6 +6,8 @@ from pprint import pprint
 
 # if no folder and no date are specified, the default folder is used and all files are searched
 datas = dataphone.search()
+
+print(datas.keys())
 print(dataphone.display(datas))
 
 keys = np.sort(datas.keys())
