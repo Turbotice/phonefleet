@@ -128,6 +128,7 @@ if __name__ == "__main__":
 
     if args.full == True:
         for key in keys:
+            data = datas[key]
             sorted = dataphone.sort_data(data)
             complete = dataphone.complete_data(sorted)
             for num in sorted.keys():
