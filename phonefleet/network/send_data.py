@@ -45,7 +45,8 @@ def command(filename):
         "rsync",
         "-av",
         "--ignore-existing",
-        "-e", f"ssh -i /data/data/com.termux/files/home/.ssh/id_ed25519",
+        "-e", "ssh -i /data/data/com.termux/files/home/.ssh/id_ed25519",
+        f"--rsync-path=mkdir -p {folder} && rsync", # Creates all folders first
         filename,
         f"{USERNAME}@{IP_ADDRESS}:{destination}"
     ]

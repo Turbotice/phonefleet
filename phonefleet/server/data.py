@@ -26,10 +26,11 @@ def search(folder=None,date=None):
 def parse_filename(filename):
     name = os.path.basename(filename)
     parts = name.split('-')
-    if len(parts)<5:
+    if len(parts)<6:
         print('Filename not recognized')
         return None
     dic = {}
+
     dic['date'] = '-'.join(parts[:3])
     dic['type'] = parts[3]
     dic['num'] = int(parts[4])
@@ -57,6 +58,8 @@ def complete_data(data):
         if len(data[num]['filelist'])>=4:
             complete.append(num)
     return complete
+
+
 
 def display(data):
     keys = np.sort(list(data.keys()))
