@@ -34,7 +34,7 @@ def pairing_device():
         extracted_text = pytesseract.image_to_string(image)
         lines = extracted_text.split('\n\n')
         text = [line.split('\n') for line in lines]
-
+        pprint(text)
         psswd = None
 
         for t in text:
