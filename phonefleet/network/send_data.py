@@ -23,6 +23,34 @@ IP_ADDRESS = '172.30.0.5'
 import argparse
 
 
+def gen_parser():   
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-full", default = False,action="store_true",dest="full", help="Send all previous complete data set")
+    args = parser.parse_args()
+    return args
+
+if __name__ == "__main__":
+    args = gen_parser()
+    
+    datas = dataphone.search()
+    keys = np.sort(list(datas.keys()))
+
+    if args.full == True:
+        for key in keys:
+            sorted = dataphone.sort_data(data)
+            complete = dataphone.complete_data(sorted)
+            for num in sorted.keys():
+                if num in complete:
+                    print(f"Sending complete data set {num} from {key}")
+                    data_to_send = sorted[num]
+                    send_data(data_to_send)
+    else:
+        last = keys[-1]
+        data = datas[last]
+        #sorted = dataphone.sort_data(data)
+        #complete = dataphone.complete_data(sorted)
+        data_to_send = last_complete_file(data)
+        send_data(data_to_send)
 
 def command(filename):
     whoami_info = whoami.get_phone_info()
@@ -113,28 +141,3 @@ def last_complete_file(data):
     else:
         print("No complete unmodified data found")
         return None
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-full", default = False,action="store_true",destination="full", help="Send all previous complete data set")
-    args = parser.parse_args()
-
-    datas = dataphone.search()
-    keys = np.sort(list(datas.keys()))
-
-    if args.full == True:
-        for key in keys:
-            sorted = dataphone.sort_data(data)
-            complete = dataphone.complete_data(sorted)
-            for num in sorted.keys():
-                if num in complete:
-                    print(f"Sending complete data set {num} from {key}")
-                    data_to_send = sorted[num]
-                    send_data(data_to_send)
-    else:
-        last = keys[-1]
-        data = datas[last]
-        #sorted = dataphone.sort_data(data)
-        #complete = dataphone.complete_data(sorted)
-        data_to_send = last_complete_file(data)
-        send_data(data_to_send)
