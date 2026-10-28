@@ -20,6 +20,9 @@ IP_ADDRESS = '172.30.0.5'
 
 #Create a database on phone to keep track of sended files. 
 #Only send latest data that has been unmodified for more than one minute
+import argparse
+
+
 
 def command(filename):
     whoami_info = whoami.get_phone_info()
@@ -104,21 +107,34 @@ def last_complete_file(data):
             print("Latest complete set of files has been modified recently, please wait")
             return None
 
-        # load the data for the last complete set of files unmodified for more than 60 seconds
-        sorted[num].update(dataphone.combine(sorted[num]))
+        #useless to load the data !
+        #sorted[num].update(dataphone.combine(sorted[num]))
         return sorted[num]
     else:
         print("No complete unmodified data found")
         return None
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-full", default = False,action="store_true",destination="full", help="Send all previous complete data set")
+    args = parser.parse_args()
+
     datas = dataphone.search()
     keys = np.sort(list(datas.keys()))
-    last = keys[-1]
-    data = datas[last]
 
-    sorted = dataphone.sort_data(data)
-    complete = dataphone.complete_data(sorted)
-
-    data_to_send = last_complete_file(data)
-    send_data(data_to_send)
+    if args.full == True:
+        for key in keys:
+            sorted = dataphone.sort_data(data)
+            complete = dataphone.complete_data(sorted)
+            for num in sorted.keys():
+                if num in complete:
+                    print(f"Sending complete data set {num} from {key}")
+                    data_to_send = sorted[num]
+                    send_data(data_to_send)
+    else:
+        last = keys[-1]
+        data = datas[last]
+        #sorted = dataphone.sort_data(data)
+        #complete = dataphone.complete_data(sorted)
+        data_to_send = last_complete_file(data)
+        send_data(data_to_send)
