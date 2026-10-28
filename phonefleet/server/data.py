@@ -26,7 +26,7 @@ def search(folder=None,date=None):
 def parse_filename(filename):
     name = os.path.basename(filename)
     parts = name.split('-')
-    if len(parts)<6:
+    if len(parts)<7:
         print('Filename not recognized')
         return None
     dic = {}
@@ -34,8 +34,11 @@ def parse_filename(filename):
     dic['date'] = '-'.join(parts[:3])
     dic['type'] = parts[3]
     dic['num'] = int(parts[4])
-    dic['tsart'] = int(parts[5])
-    dic['tend'] = int(parts[5].split('.')[0])
+    try:
+        dic['tsart'] = int(parts[5])
+        dic['tend'] = int(parts[6].split('.')[0])
+    except (ValueError, IndexError):
+        print('Error parsing timestamps from filename, continuing:', filename)
     return dic
 
 def sort_data(data):
