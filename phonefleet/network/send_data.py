@@ -33,6 +33,14 @@ def command(filename):
         filename,
         f"{USERNAME}@{IP_ADDRESS}:{destination}"
     ]
+    cmd = [
+        "rsync",
+        "-av",
+        "--ignore-existing",
+        "-e", f"ssh -i /data/data/com.termux/files/home/.ssh/id_ed25519",
+        filename,
+        f"{USERNAME}@{IP_ADDRESS}:{destination}"
+    ]
     #if not os.path.exists(folder):
     #    print(f"Create folder {folder} on the server !")#    os.makedirs(folder)
     return cmd
