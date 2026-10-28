@@ -95,7 +95,7 @@ def last_complete_file(data):
             elapsed = []
             for filename in sorted[num]['filelist']:
                 elapsed.append(elapsed_time_since_modification(filename))
-                print(f"File {filename} last modified {elapsed[-1]} ago")
+                #print(f"File {filename} last modified {elapsed[-1]} ago")
             time_elapsed[num] = np.mean(elapsed)
 
         if np.min(list(time_elapsed.values()))>np.timedelta64(60,'s'):
