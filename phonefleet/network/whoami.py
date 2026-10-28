@@ -2,6 +2,18 @@ import numpy as np
 import os
 import csv
 
+def get_phone_info():
+    fileinfo = "/data/data/com.termux/files/home/Phone.info"
+    if os.path.exists(fileinfo):
+        raw = read_csv(fileinfo,delimiter='\t')
+        info = csv2dict(raw)
+        info['Name'] = info['Name'][0]
+        return info
+    else:
+        print("No Phone.info file found, please create it")
+        return None
+
+
 def read_csv(filename,delimiter=','):
     rows = []
     with open(filename,'r') as csvfile:
@@ -43,17 +55,6 @@ def csv2dict(table,headerindex=0,symbol='#'):
             for j,key in enumerate(header):
                 data[key].append(table[i][j])
     return data
-
-def get_phone_info():
-    fileinfo = "/data/data/com.termux/files/home/Phone.info"
-    if os.path.exists(fileinfo):
-        raw = read_csv(fileinfo,delimiter='\t')
-        info = csv2dict(raw)
-        info['Name'] = info['Name'][0]
-        return info
-    else:
-        print("No Phone.info file found, please create it")
-        return None
 
 if __name__ == "__main__":
     print(get_phone_info())

@@ -5,6 +5,7 @@ global port
 port = 8080
 import csv
 import time
+import phonefleet.network.whoami as whoami
 
 def get_my_MAC(protocol='wlan0'):
         out = subprocess.run(['adb','shell','ip','link'],text=True,capture_output=True)
@@ -14,16 +15,21 @@ def get_my_MAC(protocol='wlan0'):
         return MAC
 
 def get_my_id():
-        table = read_phone_table()#table with all the registered MAC Adresses
-        MAC = get_my_MAC()
+        try:
+                table = read_phone_table()#table with all the registered MAC Adresses
+                MAC = get_my_MAC()
 
-        l = [key for key in table.keys() if table[key]['Adresse MAC']==MAC]              
-        if len(l)==1:
-                key = l[0]
-                print(f'Identifier : {key}')
-        else:
-                key = None
-                print(f'Phone not found in the table, check that {MAC} is in the list')
+                l = [key for key in table.keys() if table[key]['Adresse MAC']==MAC]              
+                if len(l)==1:
+                        key = l[0]
+                        print(f'Identifier : {key}')
+                else:
+                        key = None
+                        print(f'Phone not found in the table, check that {MAC} is in the list')
+        except Exception as e:
+                print(f'Cannot fetch phone ID from ADB: {e}, try locally from Phone.info')
+                infos = whoami.get_phone_info()
+                return infos['Name']
         return key
         
 def read_phone_table():
