@@ -11,12 +11,15 @@ LOCAL_FOLDER = '/data/data/com.termux/files/home/storage/downloads/Gobannos/'
 global DATABASE
 DATABASE = '/data/data/com.termux/files/home/storage/downloads/Gobannos/Database_serveur.txt'
 #from LAITA computer
-global SERVEUR_FOLDER
+global SERVEUR_FOLDER #Folder on the server to send the data to
 SERVEUR_FOLDER = '/Users/stephane/Documents/CASCADE26/Data/Buffer/Tests/'
-global USERNAME
+global USERNAME #Username on the server to send the data to
 USERNAME = 'stephane'
-global IP_ADDRESS
+global IP_ADDRESS #IP Adress of the server to send the data to
 IP_ADDRESS = '172.30.0.5'
+
+#Create a database on phone to keep track of sended files. 
+#Only send latest data that has been unmodified for more than one minute
 
 def command(filename):
     whoami_info = whoami.get_phone_info()
@@ -49,7 +52,7 @@ def send_data(data):
             print(f"Erreur scp (Code {e.returncode}) : {e.stderr}")
 
 def data_sended(filename):        
-    with open(DATABASE, 'w') as f:
+    with open(DATABASE, 'a') as f:
         f.write(f"{filename}\tsended\n")
 
 def has_been_sended(filename):
@@ -89,12 +92,15 @@ def last_complete_file(data):
 
         if np.min(list(time_elapsed.values()))>np.timedelta64(60,'s'):
             num = complete[np.argmin(list(time_elapsed.values()))]
+        else:
+            print("Latest complete set of files has been modified recently, please wait")
+            return None
 
         # load the data for the last complete set of files unmodified for more than 60 seconds
         sorted[num].update(dataphone.combine(sorted[num]))
         return sorted[num]
     else:
-        print("No complete unmodifieddata found")
+        print("No complete unmodified data found")
         return None
 
 if __name__ == "__main__":
