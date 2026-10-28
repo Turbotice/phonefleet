@@ -12,7 +12,7 @@ global DATABASE
 DATABASE = '/data/data/com.termux/files/home/storage/downloads/Gobannos/Database_serveur.txt'
 #from LAITA computer
 global SERVEUR_FOLDER #Folder on the server to send the data to
-SERVEUR_FOLDER = '/Users/stephane/Documents/CASCADE26/Data/Buffer/Tests/'
+SERVEUR_FOLDER = '/Users/stephane/CASCADE26/Data/Buffer/Tests/'
 global USERNAME #Username on the server to send the data to
 USERNAME = 'stephane'
 global IP_ADDRESS #IP Adress of the server to send the data to
