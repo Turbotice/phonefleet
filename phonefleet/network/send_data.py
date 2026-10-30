@@ -12,16 +12,15 @@ global DATABASE
 DATABASE = '/data/data/com.termux/files/home/storage/downloads/Gobannos/Database_serveur.txt'
 #from LAITA computer
 global SERVEUR_FOLDER #Folder on the server to send the data to
-SERVEUR_FOLDER = '/Users/stephane/CASCADE26/Data/Buffer/Tests/'
+SERVEUR_FOLDER = 'D:\cascade1\data'#'/Users/stephane/CASCADE26/Data/Buffer/Tests/'
 global USERNAME #Username on the server to send the data to
-USERNAME = 'stephane'
+USERNAME = 'turbots'
 global IP_ADDRESS #IP Adress of the server to send the data to
-IP_ADDRESS = '172.30.0.5'
+IP_ADDRESS = '192.168.3.122'
 
 #Create a database on phone to keep track of sended files. 
 #Only send latest data that has been unmodified for more than one minute
 import argparse
-
 
 def gen_parser():   
     parser = argparse.ArgumentParser()
